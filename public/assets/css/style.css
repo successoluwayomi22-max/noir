@@ -1,0 +1,6 @@
+
+/* Dark Mode Auto-Detect */
+@media (prefers-color-scheme: dark) {
+  body { background-color: #121212; color: #ffffff; }
+  .card, .product-card { background-color: #1e1e1e; color: #ffffff; border-color: #333; }
+}

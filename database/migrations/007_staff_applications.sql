@@ -1,0 +1,21 @@
+CREATE TABLE staff_applications (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    application_number VARCHAR(32) NOT NULL UNIQUE,
+    name VARCHAR(160) NOT NULL,
+    email VARCHAR(190) NOT NULL,
+    phone VARCHAR(40) NULL,
+    username VARCHAR(80) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    position VARCHAR(120) NOT NULL,
+    message TEXT NULL,
+    status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+    role_id BIGINT UNSIGNED NULL,
+    reviewed_by BIGINT UNSIGNED NULL,
+    reviewed_at DATETIME NULL,
+    rejection_reason VARCHAR(255) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX(status), INDEX(email),
+    FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE SET NULL,
+    FOREIGN KEY(reviewed_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;

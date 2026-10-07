@@ -1,0 +1,51 @@
+# Disable directory browsing
+Options -Indexes
+
+RewriteEngine On
+
+# Block sensitive files and hidden dotfiles
+<FilesMatch "(^\.|\.(env|sql|log|git|lock|bak|yml|yaml|ini|sh|md)$)">
+    Require all denied
+</FilesMatch>
+
+# Pass Authorization header to PHP in Apache
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Route agent accessibility endpoints dynamically
+RewriteRule ^(llms\.txt|llms-full\.txt)$ index.php [QSA,L]
+
+# Route non-existent files to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+# Security and caching headers
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "0"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Cross-Origin-Resource-Policy "cross-origin"
+    Header set Cross-Origin-Embedder-Policy "credentialless"
+    Header set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+    <FilesMatch "\.(css|js|jpg|jpeg|png|webp|svg|ico|woff|woff2|ttf|eot)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>

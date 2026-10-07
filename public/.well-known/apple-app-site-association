@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.com.noir.app.noir-app",
+        "paths": [ "*" ]
+      }
+    ]
+  }
+}

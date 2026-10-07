@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "941205566954",
+    "project_id": "noir-59f3f",
+    "storage_bucket": "noir-59f3f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941205566954:android:6b0649dd1c3545c8efae93",
+        "android_client_info": {
+          "package_name": "com.noir.app.noir_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_bLW7koCWvkk6qjRXoo8EaGb5KZx_Sbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

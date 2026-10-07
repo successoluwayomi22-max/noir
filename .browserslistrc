@@ -1,0 +1,10 @@
+# Browserslist configuration for modern luxury storefront and administrative suite
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions
+Chrome >= 115
+Safari >= 16.4
+Firefox >= 115
+Edge >= 115
+not dead

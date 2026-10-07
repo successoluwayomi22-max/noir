@@ -1,0 +1,27 @@
+# Noir & Co.
+
+> Considered luxury design for the everyday atelier. Modern luxury apparel, accessories, and curated home collections.
+
+Noir & Co. is a luxury retail and atelier brand creating elevated wardrobe essentials, crafted accessories, and refined homeware. Sourced responsibly and designed to endure.
+
+## Documentation & Storefront
+- [Storefront](/): Homepage featuring new arrivals, editorial drops, and curated categories
+- [Catalogue](/store): Complete shopping catalogue with live filtering, stock status, and pricing
+- [Collections](/collections): Limited atelier releases, capsule edits, and seasonal series
+- [Search](/search): Real-time product search across all collections and categories
+- [Shopping Bag](/cart): Customer shopping bag and order review
+- [Mobile Application](/download/app): Direct download for the Noir native iOS and Android application
+
+## Client Care & Policies
+- [About the Maison](/about): Brand philosophy, ethical sourcing, and master craftsmanship
+- [Frequently Asked Questions](/faq): Answers regarding orders, international delivery, and sizing
+- [Track Order](/track-order): Live courier dispatch tracking and order status
+- [Size Guide](/size-guide): Garment measurements, fit recommendations, and international conversion charts
+- [Returns & Exchanges](/returns): Returns policy, exchanges, and refund guidelines
+- [Shipping Policy](/shipping): Worldwide insured courier dispatch timelines and duties
+- [Terms of Service](/terms): Conditions of sale, client rights, and atelier policies
+- [Privacy Policy](/privacy): Data protection, cookie governance, and privacy policy
+- [Client Concierge](/contact): Direct contact channels and client support inquiries
+
+## Optional
+- [Full Text Information](/llms-full.txt): Comprehensive brand, product specifications, and policy text for language models

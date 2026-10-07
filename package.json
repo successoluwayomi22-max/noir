@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "tunnel": ".\\cloudflared.exe tunnel --edge-ip-version 4 --protocol http2 --url http://127.0.0.1:8088"
+  },
+  "devDependencies": {
+    "qrcode": "^1.5.4"
+  }
+}

@@ -1,0 +1,70 @@
+/.env
+/storage/logs/*
+/storage/cache/*
+/storage/sessions/*
+/storage/uploads/*
+/storage/backups/*
+/storage/validation/*
+!/storage/**/.gitkeep
+
+sync_config.jsonc
+
+# --- Dependencies -----------------------------------------------------------
+/node_modules/
+mobile/node_modules/
+
+# --- Local tooling / binaries -----------------------------------------------
+cloudflared.exe
+*.exe
+*.apk
+*.aab
+*.ipa
+/public/downloads/*
+!/public/downloads/.gitkeep
+.php-cs-fixer.cache
+vendor/
+
+# --- Scratch / temp / debug artifacts ---------------------------------------
+/debug.log
+*.log
+test_token.txt
+temp_*.php
+temp_*.txt
+scratch/
+_mobile_dev/
+
+# --- Databases & dumps (contain user data / hashes — never publish) ---------
+database/noir.sqlite
+*.sqlite
+database/noir_demo_backup.sql
+*.sql.gz
+*.dump.sql
+
+# --- Screenshots / generated media at repo root -----------------------------
+/*.png
+/*.jpg
+
+# --- Flutter / Dart / mobile build artifacts --------------------------------
+mobile/.dart-local/
+mobile/.idea/
+mobile/.gradle/
+mobile/android/.gradle/
+mobile/android/.kotlin/
+mobile/android/app/build/
+mobile/android/build/
+mobile/ios/build/
+mobile/build/
+mobile/.dart_tool/
+mobile/.flutter-plugins*
+mobile/ios/Flutter/ephemeral/
+mobile/windows/flutter/ephemeral/
+mobile/linux/flutter/ephemeral/
+mobile/macos/Flutter/ephemeral/
+
+# --- sdks (vendored Flutter SDK — huge, machine-specific) -------------------
+sdks/
+
+# --- OS / editor noise ------------------------------------------------------
+.DS_Store
+Thumbs.db
+.vscode/

@@ -1,0 +1,5 @@
+<?php
+declare(strict_types=1);
+function customer_badge(string $status): string { $class = match (strtolower($status)) { 'delivered','paid','resolved','credit' => 'bg-[#e2eadb] text-[#59704e]', 'pending','processing' => 'bg-[#eee8d5] text-[#877546]', default => 'bg-[#e7e8e2] text-[#687158]' }; return '<span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ' . $class . '">' . e(__($status)) . '</span>'; }
+function customer_money(float|int $amount, string $currency = 'NGN'): string { return format_currency($amount); }
+function customer_card(string $title, string $value, string $icon, string $caption = ''): string { return '<div class="rounded-2xl border border-[#e5e5dd] bg-[#fbfbf7] p-5"><div class="mb-5 flex items-center justify-between"><span class="text-xs text-[#77796f]">' . e(__($title)) . '</span><i data-lucide="' . e($icon) . '" class="h-4 w-4 text-[#687158]"></i></div><strong class="block text-2xl font-medium tracking-tight text-[#252820]">' . e($value) . '</strong><small class="mt-2 block text-xs text-[#92948a]">' . e(__($caption)) . '</small></div>'; }

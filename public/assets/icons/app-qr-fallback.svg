@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160" fill="none">
+    <rect width="160" height="160" rx="12" fill="#ffffff"/>
+    <!-- Top Left Finder Pattern -->
+    <rect x="16" y="16" width="36" height="36" rx="4" fill="#252820"/>
+    <rect x="22" y="22" width="24" height="24" rx="2" fill="#ffffff"/>
+    <rect x="27" y="27" width="14" height="14" rx="2" fill="#252820"/>
+
+    <!-- Top Right Finder Pattern -->
+    <rect x="108" y="16" width="36" height="36" rx="4" fill="#252820"/>
+    <rect x="114" y="22" width="24" height="24" rx="2" fill="#ffffff"/>
+    <rect x="119" y="27" width="14" height="14" rx="2" fill="#252820"/>
+
+    <!-- Bottom Left Finder Pattern -->
+    <rect x="16" y="108" width="36" height="36" rx="4" fill="#252820"/>
+    <rect x="22" y="114" width="24" height="24" rx="2" fill="#ffffff"/>
+    <rect x="27" y="119" width="14" height="14" rx="2" fill="#252820"/>
+
+    <!-- Data Elements -->
+    <rect x="62" y="18" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="76" y="18" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="90" y="18" width="8" height="8" rx="1.5" fill="#252820"/>
+
+    <rect x="62" y="32" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="76" y="32" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="90" y="32" width="8" height="8" rx="1.5" fill="#252820"/>
+
+    <rect x="62" y="46" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="90" y="46" width="8" height="8" rx="1.5" fill="#252820"/>
+
+    <!-- Middle row dots -->
+    <rect x="18" y="62" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="32" y="62" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="46" y="62" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="60" y="62" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="92" y="62" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="106" y="62" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="120" y="62" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="134" y="62" width="8" height="8" rx="1.5" fill="#252820"/>
+
+    <rect x="18" y="76" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="46" y="76" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="106" y="76" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="134" y="76" width="8" height="8" rx="1.5" fill="#252820"/>
+
+    <rect x="18" y="90" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="32" y="90" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="60" y="90" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="92" y="90" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="120" y="90" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="134" y="90" width="8" height="8" rx="1.5" fill="#252820"/>
+
+    <!-- Bottom Data -->
+    <rect x="62" y="104" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="76" y="104" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="90" y="104" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="104" y="104" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="132" y="104" width="8" height="8" rx="1.5" fill="#252820"/>
+
+    <rect x="62" y="118" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="90" y="118" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="118" y="118" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="132" y="118" width="8" height="8" rx="1.5" fill="#252820"/>
+
+    <rect x="62" y="132" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="76" y="132" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="104" y="132" width="8" height="8" rx="1.5" fill="#252820"/>
+    <rect x="118" y="132" width="8" height="8" rx="1.5" fill="#252820"/>
+
+    <!-- Center Brand Emblem -->
+    <rect x="66" y="66" width="28" height="28" rx="7" fill="#687158"/>
+    <path d="M74 84V76L82 84V76" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
