@@ -22,7 +22,7 @@ cloudflared.exe
 /public/downloads/*
 !/public/downloads/.gitkeep
 .php-cs-fixer.cache
-vendor/
+/vendor/
 
 # --- Scratch / temp / debug artifacts ---------------------------------------
 /debug.log
