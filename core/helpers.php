@@ -380,44 +380,78 @@ function recaptcha_field(string $action = 'submit'): string
         $nonce = function_exists('csp_nonce') ? ' nonce="' . e(csp_nonce()) . '"' : '';
         $jsSiteKey = json_encode($siteKey);
         $jsAction = json_encode($action);
-        return '<input type="hidden" name="g-recaptcha-response" class="g-recaptcha-response" value="">' .
+        return '<input type="hidden" name="g-recaptcha-response" class="g-recaptcha-response" value="" data-ready="false">' .
             '<script' . $nonce . '>
-            document.addEventListener("DOMContentLoaded", function() {
+            (function() {
                 var siteKey = ' . $jsSiteKey . ';
                 var actionName = ' . $jsAction . ';
-                function refreshRecaptchaToken() {
-                    if (typeof grecaptcha !== "undefined" && grecaptcha.ready) {
-                        grecaptcha.ready(function() {
-                            grecaptcha.execute(siteKey, {action: actionName}).then(function(token) {
-                                document.querySelectorAll(".g-recaptcha-response").forEach(function(el) {
-                                    el.value = token;
+
+                function obtainToken(callback) {
+                    if (window.grecaptcha && window.grecaptcha.ready) {
+                        try {
+                            window.grecaptcha.ready(function() {
+                                window.grecaptcha.execute(siteKey, {action: actionName}).then(function(token) {
+                                    document.querySelectorAll("input.g-recaptcha-response").forEach(function(el) {
+                                        el.value = token;
+                                        el.setAttribute("data-ready", "true");
+                                    });
+                                    if (typeof callback === "function") callback(token);
+                                }).catch(function(err) {
+                                    console.warn("reCAPTCHA execute failed:", err);
+                                    if (typeof callback === "function") callback("");
                                 });
-                            }).catch(function(err) {
-                                console.warn("reCAPTCHA v3 warning:", err);
                             });
-                        });
+                        } catch (e) {
+                            console.warn("reCAPTCHA invocation error:", e);
+                            if (typeof callback === "function") callback("");
+                        }
+                    } else {
+                        if (typeof callback === "function") callback("");
                     }
                 }
-                refreshRecaptchaToken();
-                setInterval(refreshRecaptchaToken, 100000);
-                document.querySelectorAll("form").forEach(function(form) {
-                    if (form.querySelector(".g-recaptcha-response") && !form.__noir_recaptcha_bound) {
-                        form.__noir_recaptcha_bound = true;
-                        form.addEventListener("submit", function(e) {
-                            var input = form.querySelector(".g-recaptcha-response");
-                            if (input && !input.value && typeof grecaptcha !== "undefined" && grecaptcha.execute) {
-                                e.preventDefault();
-                                grecaptcha.execute(siteKey, {action: actionName}).then(function(token) {
-                                    input.value = token;
-                                    form.submit();
-                                }).catch(function() {
-                                    form.submit();
-                                });
-                            }
-                        });
+
+                // Poll until Google grecaptcha library is ready
+                var pollTries = 0;
+                var pollInterval = setInterval(function() {
+                    pollTries++;
+                    if (window.grecaptcha && window.grecaptcha.ready) {
+                        clearInterval(pollInterval);
+                        obtainToken();
+                    } else if (pollTries > 60) {
+                        clearInterval(pollInterval);
                     }
-                });
-            });
+                }, 200);
+
+                // Refresh token every 90 seconds (Google v3 tokens expire after 2 minutes)
+                setInterval(function() {
+                    obtainToken();
+                }, 90000);
+
+                // Intercept form submission to guarantee token presence
+                document.addEventListener("submit", function(event) {
+                    var form = event.target;
+                    if (!form || typeof form.querySelector !== "function") return;
+                    var input = form.querySelector("input.g-recaptcha-response");
+                    if (!input) return;
+
+                    // If a valid token was already pre-fetched, submit immediately
+                    if (input.value && input.getAttribute("data-ready") === "true") {
+                        return;
+                    }
+
+                    // Otherwise intercept and fetch a fresh token before submitting
+                    event.preventDefault();
+                    var submitBtn = form.querySelector("button[type=submit], input[type=submit]");
+                    if (submitBtn) submitBtn.disabled = true;
+
+                    obtainToken(function(token) {
+                        input.value = token;
+                        input.setAttribute("data-ready", "true");
+                        if (submitBtn) submitBtn.disabled = false;
+                        HTMLFormElement.prototype.submit.call(form);
+                    });
+                }, true);
+            })();
             </script>';
     }
     return '<div class="recaptcha-wrapper" style="margin: 16px 0;"><div class="g-recaptcha" data-sitekey="' . e($siteKey) . '"></div></div>';

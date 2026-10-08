@@ -349,11 +349,6 @@ final class AuthController
         $email = strtolower(trim((string)$request->input('email')));
         $password = (string)$request->input('password');
         $confirmation = (string)$request->input('password_confirmation');
-        $recaptchaToken = (string)$request->input('g-recaptcha-response', $request->input('recaptcha_token', ''));
-        if (!$this->verifyRecaptcha($recaptchaToken)) {
-            header('Location: register?error=recaptcha');
-            exit;
-        }
 
         if ($name === '') {
             header('Location: register?error=name');
