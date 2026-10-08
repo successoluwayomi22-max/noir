@@ -10,8 +10,15 @@ return [
     'timezone' => 'Africa/Lagos', 'url' => $env('APP_URL', 'http://localhost:8000'),
     'session' => ['name' => $env('SESSION_NAME', 'noir_session'), 'secure' => filter_var($env('SESSION_SECURE', false), FILTER_VALIDATE_BOOL)],
     'mail' => ['from_address' => $env('MAIL_FROM_ADDRESS', 'no-reply@noir.test'), 'from_name' => $env('MAIL_FROM_NAME', 'Noir & Co.'), 'contact_to' => $env('CONTACT_TO_EMAIL', ''), 'enabled' => filter_var($env('MAIL_ENABLED', false), FILTER_VALIDATE_BOOL), 'brevo_api_key' => trim((string)($env('BREVO_API_KEY') ?: $env('SMTP_KEY', ''))), 'smtp_key' => trim((string)$env('SMTP_KEY', ''))],
-    'recaptcha' => ['site_key' => trim((string)$env('RECAPTCHA_SITE_KEY', '')), 'secret_key' => trim((string)$env('RECAPTCHA_SECRET_KEY', ''))],
-    'google' => ['client_id' => $env('GOOGLE_OAUTH_CLIENT_ID', ''), 'client_secret' => $env('GOOGLE_OAUTH_CLIENT_SECRET', ''), 'redirect_uri' => $env('GOOGLE_OAUTH_REDIRECT_URI', '')],
+    'recaptcha' => [
+        'site_key' => trim((string)($env('RECAPTCHA_SITE_KEY') ?: $env('site') ?: $env('site_key') ?: $env('SITE_KEY') ?: $env('RECAPTCHA_SITE') ?: '6LfwneUtAAAAANk9NU-mJL-_iPn8ccx_msUUXvdU')),
+        'secret_key' => trim((string)($env('RECAPTCHA_SECRET_KEY') ?: $env('secret') ?: $env('secret_key') ?: $env('SECRET_KEY') ?: $env('RECAPTCHA_SECRET') ?: '6LfwneUtAAAAAGalHqQjlpv7w7D-IIybIXiuh3Md')),
+    ],
+    'google' => [
+        'client_id' => trim((string)($env('GOOGLE_OAUTH_CLIENT_ID') ?: $env('GOOGLE_CLIENT_ID') ?: $env('client_id') ?: $env('client id') ?: $env('CLIENT_ID') ?: '863818902619-u63j9hs0go519obr8njgmgg9asc03lej.apps.googleusercontent.com')),
+        'client_secret' => trim((string)($env('GOOGLE_OAUTH_CLIENT_SECRET') ?: $env('GOOGLE_CLIENT_SECRET') ?: $env('client_secret') ?: $env('client secret') ?: $env('CLIENT_SECRET') ?: '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')),
+        'redirect_uri' => trim((string)($env('GOOGLE_OAUTH_REDIRECT_URI') ?: $env('GOOGLE_REDIRECT_URI') ?: 'https://noir-73fy.onrender.com/auth/google/callback')),
+    ],
     'ai' => [
         'enabled' => filter_var($env('AI_ASSISTANT_ENABLED', false), FILTER_VALIDATE_BOOL),
         'provider' => strtolower(trim((string)$env('AI_PROVIDER', 'openai'))),

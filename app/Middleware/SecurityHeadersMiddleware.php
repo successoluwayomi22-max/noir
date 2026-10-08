@@ -44,7 +44,7 @@ final class SecurityHeadersMiddleware
             "connect-src 'self' https://api.paystack.co https://maps.googleapis.com https://*.trycloudflare.com https://www.gstatic.com https://www.google.com https://recaptcha.net https://www.recaptcha.net wss: ws:",
             "object-src 'none'",
             "base-uri 'self'",
-            "form-action 'self'",
+            "form-action 'self' https://accounts.google.com",
         ];
         if ($isHttps || !$isLocal) {
             $csp[] = "upgrade-insecure-requests";
