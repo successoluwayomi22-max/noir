@@ -43,6 +43,8 @@ RewriteRule ^ index.php [QSA,L]
     Header set Cross-Origin-Resource-Policy "cross-origin"
     Header set Cross-Origin-Embedder-Policy "credentialless"
     Header set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+    Header onsuccess unset Strict-Transport-Security
+    Header always unset Strict-Transport-Security
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 
     <FilesMatch "\.(css|js|jpg|jpeg|png|webp|svg|ico|woff|woff2|ttf|eot)$">

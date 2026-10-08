@@ -34,16 +34,6 @@ header('X-XSS-Protection: 0');
 header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
 header('Cross-Origin-Resource-Policy: cross-origin');
 
-$indexHost = (string)($_SERVER['HTTP_HOST'] ?? '');
-$indexIsLocal = str_starts_with($indexHost, 'localhost') || str_starts_with($indexHost, '127.0.0.1');
-$indexIsHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-    || (isset($_SERVER['HTTP_CF_VISITOR']) && str_contains($_SERVER['HTTP_CF_VISITOR'], 'https'))
-    || (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on');
-
-if ($indexIsHttps || !$indexIsLocal) {
-    header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
-}
 
 // Enable CORS for Flutter Web / external clients
 header('Access-Control-Allow-Origin: *');

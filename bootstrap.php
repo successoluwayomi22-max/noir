@@ -56,7 +56,8 @@ if ($isHttps) {
     $_SERVER['HTTPS'] = 'on';
 }
 if ($isHttps && !headers_sent()) {
-    header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
+    header_remove('Strict-Transport-Security');
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload', true);
 }
 
 // Redirect cleartext HTTP requests to HTTPS when running on public domains / tunnels
@@ -73,9 +74,6 @@ if ($config['env'] === 'production') {
     $config['debug'] = false;
     ini_set('display_errors', '0');
     ini_set('display_startup_errors', '0');
-    if ($isHttps && !headers_sent()) {
-        header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
-    }
 }
 date_default_timezone_set($config['timezone']);
 

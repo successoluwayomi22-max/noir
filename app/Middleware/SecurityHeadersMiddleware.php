@@ -53,7 +53,8 @@ final class SecurityHeadersMiddleware
 
         // Enforce HSTS with preload only for actual HTTPS environments (never on cleartext localhost)
         if ($isHttps) {
-            header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
+            header_remove('Strict-Transport-Security');
+            header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload', true);
         }
     }
 }
