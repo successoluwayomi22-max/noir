@@ -10,11 +10,13 @@ final class RecaptchaService
 
     private ?string $siteKey;
     private ?string $secretKey;
+    private string $version;
 
-    public function __construct(?string $siteKey = null, ?string $secretKey = null)
+    public function __construct(?string $siteKey = null, ?string $secretKey = null, ?string $version = null)
     {
         $this->siteKey = $siteKey ?? (string) config('recaptcha.site_key', (string)($_ENV['RECAPTCHA_SITE_KEY'] ?? ''));
         $this->secretKey = $secretKey ?? (string) config('recaptcha.secret_key', (string)($_ENV['RECAPTCHA_SECRET_KEY'] ?? ''));
+        $this->version = $version ?? (string) config('recaptcha.version', (string)($_ENV['RECAPTCHA_VERSION'] ?? 'v3'));
     }
 
     public function siteKey(): string
@@ -25,6 +27,11 @@ final class RecaptchaService
     public function secretKey(): string
     {
         return trim((string) $this->secretKey);
+    }
+
+    public function version(): string
+    {
+        return strtolower(trim($this->version));
     }
 
     /**
@@ -98,7 +105,14 @@ final class RecaptchaService
 
             if ($response !== false && $httpCode === 200) {
                 $data = json_decode((string) $response, true);
-                return !empty($data['success']);
+                if (empty($data['success'])) {
+                    return false;
+                }
+                if (isset($data['score']) && (float)$data['score'] < 0.3) {
+                    error_log('reCAPTCHA v3 score below threshold: ' . $data['score']);
+                    return false;
+                }
+                return true;
             }
         }
 
@@ -115,7 +129,14 @@ final class RecaptchaService
         $response = @file_get_contents(self::VERIFY_URL, false, $context);
         if ($response !== false) {
             $data = json_decode($response, true);
-            return !empty($data['success']);
+            if (empty($data['success'])) {
+                return false;
+            }
+            if (isset($data['score']) && (float)$data['score'] < 0.3) {
+                error_log('reCAPTCHA v3 score below threshold: ' . $data['score']);
+                return false;
+            }
+            return true;
         }
 
         return false;

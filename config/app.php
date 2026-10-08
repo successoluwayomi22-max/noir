@@ -11,6 +11,7 @@ return [
     'session' => ['name' => $env('SESSION_NAME', 'noir_session'), 'secure' => filter_var($env('SESSION_SECURE', false), FILTER_VALIDATE_BOOL)],
     'mail' => ['from_address' => $env('MAIL_FROM_ADDRESS', 'no-reply@noir.test'), 'from_name' => $env('MAIL_FROM_NAME', 'Noir & Co.'), 'contact_to' => $env('CONTACT_TO_EMAIL', ''), 'enabled' => filter_var($env('MAIL_ENABLED', false), FILTER_VALIDATE_BOOL), 'brevo_api_key' => trim((string)($env('BREVO_API_KEY') ?: $env('SMTP_KEY', ''))), 'smtp_key' => trim((string)$env('SMTP_KEY', ''))],
     'recaptcha' => [
+        'version' => strtolower(trim((string)($env('RECAPTCHA_VERSION') ?: 'v3'))),
         'site_key' => trim((string)($env('RECAPTCHA_SITE_KEY') ?: $env('site') ?: $env('site_key') ?: $env('SITE_KEY') ?: $env('RECAPTCHA_SITE') ?: '6LfwneUtAAAAANk9NU-mJL-_iPn8ccx_msUUXvdU')),
         'secret_key' => trim((string)($env('RECAPTCHA_SECRET_KEY') ?: $env('secret') ?: $env('secret_key') ?: $env('SECRET_KEY') ?: $env('RECAPTCHA_SECRET') ?: '6LfwneUtAAAAAGalHqQjlpv7w7D-IIybIXiuh3Md')),
     ],

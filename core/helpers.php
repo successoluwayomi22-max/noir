@@ -359,19 +359,68 @@ function recaptcha_head(): string
         return '';
     }
     $nonce = function_exists('csp_nonce') ? ' nonce="' . e(csp_nonce()) . '"' : '';
+    $siteKey = $service->siteKey();
+    if ($service->version() === 'v3') {
+        return '<script src="https://www.google.com/recaptcha/api.js?render=' . urlencode($siteKey) . '" async defer' . $nonce . '></script>';
+    }
     return '<script src="https://www.google.com/recaptcha/api.js" async defer' . $nonce . '></script>';
 }
 
 /**
  * Renders the reCAPTCHA widget HTML container if reCAPTCHA is configured.
  */
-function recaptcha_field(): string
+function recaptcha_field(string $action = 'submit'): string
 {
     $service = new \Noir\App\Services\RecaptchaService();
     if (!$service->isEnabled()) {
         return '';
     }
-    return '<div class="recaptcha-wrapper" style="margin: 16px 0;"><div class="g-recaptcha" data-sitekey="' . e($service->siteKey()) . '"></div></div>';
+    $siteKey = $service->siteKey();
+    if ($service->version() === 'v3') {
+        $nonce = function_exists('csp_nonce') ? ' nonce="' . e(csp_nonce()) . '"' : '';
+        $jsSiteKey = json_encode($siteKey);
+        $jsAction = json_encode($action);
+        return '<input type="hidden" name="g-recaptcha-response" class="g-recaptcha-response" value="">' .
+            '<script' . $nonce . '>
+            document.addEventListener("DOMContentLoaded", function() {
+                var siteKey = ' . $jsSiteKey . ';
+                var actionName = ' . $jsAction . ';
+                function refreshRecaptchaToken() {
+                    if (typeof grecaptcha !== "undefined" && grecaptcha.ready) {
+                        grecaptcha.ready(function() {
+                            grecaptcha.execute(siteKey, {action: actionName}).then(function(token) {
+                                document.querySelectorAll(".g-recaptcha-response").forEach(function(el) {
+                                    el.value = token;
+                                });
+                            }).catch(function(err) {
+                                console.warn("reCAPTCHA v3 warning:", err);
+                            });
+                        });
+                    }
+                }
+                refreshRecaptchaToken();
+                setInterval(refreshRecaptchaToken, 100000);
+                document.querySelectorAll("form").forEach(function(form) {
+                    if (form.querySelector(".g-recaptcha-response") && !form.__noir_recaptcha_bound) {
+                        form.__noir_recaptcha_bound = true;
+                        form.addEventListener("submit", function(e) {
+                            var input = form.querySelector(".g-recaptcha-response");
+                            if (input && !input.value && typeof grecaptcha !== "undefined" && grecaptcha.execute) {
+                                e.preventDefault();
+                                grecaptcha.execute(siteKey, {action: actionName}).then(function(token) {
+                                    input.value = token;
+                                    form.submit();
+                                }).catch(function() {
+                                    form.submit();
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+            </script>';
+    }
+    return '<div class="recaptcha-wrapper" style="margin: 16px 0;"><div class="g-recaptcha" data-sitekey="' . e($siteKey) . '"></div></div>';
 }
 
 /**
