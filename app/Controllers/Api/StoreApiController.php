@@ -671,7 +671,7 @@ final class StoreApiController
             $searchKey = $matches[1];
         }
 
-        $stmt = $db->prepare('SELECT id, name, sku, barcode, price, material, category, featured_image, created_at FROM products WHERE (sku = ? OR barcode = ? OR slug = ? OR id = ?) AND status = "published" LIMIT 1');
+        $stmt = $db->prepare("SELECT id, name, sku, barcode, price, material, category, featured_image, created_at FROM products WHERE (sku = ? OR barcode = ? OR slug = ? OR id = ?) AND status = 'published' LIMIT 1");
         $stmt->execute([$searchKey, $searchKey, $searchKey, is_numeric($searchKey) ? (int)$searchKey : 0]);
         $product = $stmt->fetch();
 

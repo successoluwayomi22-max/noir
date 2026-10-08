@@ -426,7 +426,7 @@ final class AdminController
         $user = $db->prepare("SELECT u.id, u.name, u.email, u.fcm_token, EXISTS(SELECT 1 FROM user_roles x JOIN roles xr ON xr.id=x.role_id WHERE x.user_id=u.id AND xr.slug='super-admin') is_super_admin FROM users u WHERE u.id=? AND u.account_type='staff'");
         $user->execute([$userId]);
         $userData = $user->fetch();
-        $role = $db->prepare('SELECT id,name,slug FROM roles WHERE id=? AND slug<>"guest" AND slug<>"customer"');
+        $role = $db->prepare("SELECT id,name,slug FROM roles WHERE id=? AND slug<>'guest' AND slug<>'customer'");
         $role->execute([$roleId]);
         $roleData = $role->fetch();
         if (!$userData || !$roleData) {
@@ -1616,9 +1616,9 @@ final class AdminController
 
         $db = Container::get('db');
         $db->prepare(
-            'INSERT INTO blocked_ips (ip_address, reason, request_count, route, blocked_until)
-             VALUES (?, ?, 1, "manual_admin", ?)
-             ON DUPLICATE KEY UPDATE reason = VALUES(reason), blocked_until = VALUES(blocked_until)'
+            "INSERT INTO blocked_ips (ip_address, reason, request_count, route, blocked_until)
+             VALUES (?, ?, 1, 'manual_admin', ?)
+             ON DUPLICATE KEY UPDATE reason = VALUES(reason), blocked_until = VALUES(blocked_until)"
         )->execute([$ip, $reason, $blockedUntil]);
         \Noir\Core\ActivityLogger::log('security.ip_blocked', 'security', 0, "Manual Block: {$ip} ({$reason})");
 
@@ -1776,7 +1776,7 @@ final class AdminController
                 ];
                 $videoUrl = $sampleVideos[$productId % count($sampleVideos)];
             }
-            $vStmt = $db->prepare('INSERT INTO video_commerce (title, user, likes_count, comments_count, products_count, url, thumbnail, product_id, status, created_at, updated_at) VALUES (?, ?, 0, 0, 1, ?, ?, ?, "active", NOW(), NOW())');
+            $vStmt = $db->prepare("INSERT INTO video_commerce (title, user, likes_count, comments_count, products_count, url, thumbnail, product_id, status, created_at, updated_at) VALUES (?, ?, 0, 0, 1, ?, ?, ?, 'active', NOW(), NOW())");
             $vStmt->execute([$product['name'], '@noir.official', $videoUrl, $imageUrl, $productId]);
         } catch (\Throwable $e) {
             error_log('Auto-publish engagement failed: ' . $e->getMessage());
@@ -1833,8 +1833,8 @@ final class AdminController
 
         // System entity counters
         $totalOrders = (int) $db->query('SELECT COUNT(*) FROM orders')->fetchColumn();
-        $totalUsers = (int) $db->query('SELECT COUNT(*) FROM users WHERE account_type = "customer"')->fetchColumn();
-        $activeProducts = (int) $db->query('SELECT COUNT(*) FROM products WHERE status = "published"')->fetchColumn();
+        $totalUsers = (int) $db->query("SELECT COUNT(*) FROM users WHERE account_type = 'customer'")->fetchColumn();
+        $activeProducts = (int) $db->query("SELECT COUNT(*) FROM products WHERE status = 'published'")->fetchColumn();
         $blockedIps = (int) $db->query('SELECT COUNT(*) FROM blocked_ips WHERE blocked_until > NOW() OR is_permanent = 1')->fetchColumn();
 
         // Pass traces and predictive diagnostics to view

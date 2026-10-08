@@ -58,7 +58,7 @@ final class ApiTokenMiddleware
             $roles = array_merge([['id' => 0, 'name' => ucfirst($accountType), 'slug' => $accountType]], $roles);
         }
 
-        $permissionQuery = $db->prepare('SELECT DISTINCT p.slug FROM permissions p JOIN role_permissions rp ON rp.permission_id=p.id JOIN user_roles ur ON ur.role_id=rp.role_id WHERE ur.user_id=? AND rp.effect="allow"');
+        $permissionQuery = $db->prepare("SELECT DISTINCT p.slug FROM permissions p JOIN role_permissions rp ON rp.permission_id=p.id JOIN user_roles ur ON ur.role_id=rp.role_id WHERE ur.user_id=? AND rp.effect='allow'");
         $permissionQuery->execute([$userId]);
         $primaryRole = $roles[0];
         $profileImage = !empty($user['profile_image']) ? (string)$user['profile_image'] : (string)(store_setting('admin_profile_image_' . $userId) ?: store_setting('admin_profile_image_0'));

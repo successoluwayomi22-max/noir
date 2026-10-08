@@ -388,8 +388,8 @@ final class AuthController
                 $newUserId = $guestUserId;
                 unset($_SESSION['guest_token']);
             } else {
-                $q = $db->prepare('INSERT INTO users (public_id,username,name,email,password_hash,status,email_verified_at) VALUES (?,?,?,?,?,?,?)');
-                $q->execute([strtoupper(bin2hex(random_bytes(13))),$username,$name,$email,password_hash($password, PASSWORD_DEFAULT),'active',$verifiedAt]);
+                $q = $db->prepare('INSERT INTO users (public_id,username,name,email,password_hash,status,account_type,email_verified_at) VALUES (?,?,?,?,?,?,?,?)');
+                $q->execute([strtoupper(bin2hex(random_bytes(13))),$username,$name,$email,password_hash($password, PASSWORD_DEFAULT),'active','customer',$verifiedAt]);
                 $newUserId = (int)$db->lastInsertId();
             }
             $role = $db->query("SELECT id FROM roles WHERE slug='customer' LIMIT 1")->fetchColumn();
@@ -411,14 +411,26 @@ final class AuthController
             header('Location: register?error=exists');
             exit;
         }
-        (new Mailer())->sendCustomerWelcome($email, $name, $this->absolutePath('/login'));
-        
-        $klaviyo = new \Noir\App\Services\KlaviyoService();
-        if ($klaviyo->isConfigured()) {
-            $klaviyo->createProfile($email, explode(' ', $name, 2)[0] ?? '', explode(' ', $name, 2)[1] ?? '');
+
+        try {
+            (new Mailer())->sendCustomerWelcome($email, $name, $this->absolutePath('/login'));
+        } catch (\Throwable $e) {
+            error_log('Welcome email dispatch notice: ' . $e->getMessage());
         }
 
-        $userSession = $guestUserId > 0 ? Container::get('authentication')->loginUserById($newUserId, 'auth.guest_promoted') : Container::get('authentication')->authenticate($email, $password, false);
+        try {
+            $klaviyo = new \Noir\App\Services\KlaviyoService();
+            if ($klaviyo->isConfigured()) {
+                $klaviyo->createProfile($email, explode(' ', $name, 2)[0] ?? '', explode(' ', $name, 2)[1] ?? '');
+            }
+        } catch (\Throwable $e) {
+            error_log('Klaviyo profile dispatch notice: ' . $e->getMessage());
+        }
+
+        $userSession = Container::get('authentication')->loginUserById(
+            $newUserId,
+            $guestUserId > 0 ? 'auth.guest_promoted' : 'auth.register'
+        );
         $redirect = (string)$request->input('redirect');
         $path = $this->publicPath(Container::get('role_redirect')->pathFor($userSession['roles'] ?? []));
         if ($redirect !== '' && str_starts_with($redirect, '/')) {

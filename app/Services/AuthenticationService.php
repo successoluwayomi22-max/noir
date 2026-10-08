@@ -146,7 +146,7 @@ final class AuthenticationService
         $roles = $rolesQuery->fetchAll();
         if (($user['account_type'] ?? null) === 'customer' && !in_array('customer', array_column($roles, 'slug'), true)) $roles = array_merge([['id'=>0,'name'=>'Customer','slug'=>'customer']], $roles);
         if (!$roles) throw new \RuntimeException('This account has no assigned role.', 403);
-        $permissionQuery = $this->db->prepare('SELECT DISTINCT p.slug FROM permissions p JOIN role_permissions rp ON rp.permission_id=p.id JOIN user_roles ur ON ur.role_id=rp.role_id WHERE ur.user_id=? AND rp.effect="allow"');
+        $permissionQuery = $this->db->prepare("SELECT DISTINCT p.slug FROM permissions p JOIN role_permissions rp ON rp.permission_id=p.id JOIN user_roles ur ON ur.role_id=rp.role_id WHERE ur.user_id=? AND rp.effect='allow'");
         $permissionQuery->execute([$userId]);
         $primaryRole = $roles[0];
         $profileImage = !empty($user['profile_image']) ? (string)$user['profile_image'] : (string)(store_setting('admin_profile_image_' . $userId) ?: store_setting('admin_profile_image_0'));

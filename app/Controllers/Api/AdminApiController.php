@@ -286,7 +286,7 @@ final class AdminApiController
             if (empty($videoUrl)) {
                 $videoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-fashion-model-in-a-black-dress-40348-large.mp4';
             }
-            $db->prepare('INSERT INTO video_commerce (title, user, likes_count, comments_count, products_count, url, status, created_at, updated_at) VALUES (?, ?, 0, 0, 1, ?, "active", NOW(), NOW())')
+            $db->prepare("INSERT INTO video_commerce (title, user, likes_count, comments_count, products_count, url, status, created_at, updated_at) VALUES (?, ?, 0, 0, 1, ?, 'active', NOW(), NOW())")
                ->execute([$name, '@noir.official', $videoUrl]);
         } catch (\Throwable $e) {}
         

@@ -9,7 +9,7 @@ final class Rbac
 
     public function permissionsFor(int $userId): array
     {
-        $query = $this->db->prepare('SELECT DISTINCT p.slug FROM permissions p JOIN role_permissions rp ON rp.permission_id=p.id JOIN user_roles ur ON ur.role_id=rp.role_id WHERE ur.user_id=? AND rp.effect="allow"');
+        $query = $this->db->prepare("SELECT DISTINCT p.slug FROM permissions p JOIN role_permissions rp ON rp.permission_id=p.id JOIN user_roles ur ON ur.role_id=rp.role_id WHERE ur.user_id=? AND rp.effect='allow'");
         $query->execute([$userId]);
         return $query->fetchAll(\PDO::FETCH_COLUMN);
     }

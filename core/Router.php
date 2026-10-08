@@ -41,7 +41,7 @@ final class Router
 
                     if ($isLoopback || ($isAdminRoute && !empty($_SESSION['user']['account_type']) && in_array($_SESSION['user']['account_type'], ['staff', 'admin'], true))) {
                         if ($isLoopback) {
-                            $db->prepare('DELETE FROM blocked_ips WHERE ip_address IN ("127.0.0.1", "::1", "localhost")')->execute();
+                            $db->prepare("DELETE FROM blocked_ips WHERE ip_address IN ('127.0.0.1', '::1', 'localhost')")->execute();
                         }
                     } elseif (!$isExpired) {
                         http_response_code(403);
