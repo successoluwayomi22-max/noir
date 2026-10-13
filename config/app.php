@@ -57,7 +57,7 @@ return [
         }
         return $dbConfig;
     })(),
-    'app_download_url' => $env('APP_DOWNLOAD_URL', 'https://github.com/successoluwayomi22-max/noir/releases/download/v1.0.0/noir-app.apk'),
+    'app_download_url' => $env('APP_DOWNLOAD_URL', 'https://github.com/successoluwayomi22-max/noir-app/releases/download/v1.0.0/noir-app.apk'),
     'analytics' => ['google_measurement_id' => trim((string)$env('GOOGLE_ANALYTICS_ID', ''))],
     'payments' => [
         'default_provider' => $env('PAYMENT_DEFAULT_PROVIDER', 'paystack'),
