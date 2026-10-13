@@ -276,10 +276,13 @@ $appDownloadUrl = $downloadHost . ($publicPath ?: '') . '/download/app';
                 <!-- Android Card -->
                 <div class="app-card <?= !$isIos ? 'featured' : '' ?>">
                     <div>
-                        <span class="app-card-badge"><i data-lucide="smartphone" style="width:12px;height:12px;"></i> <?= __('Android Package') ?></span>
+                        <span class="app-card-badge" style="background:rgba(61,220,132,0.12);border-color:rgba(61,220,132,0.3);color:#3ddc84;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:inline-block;vertical-align:-1px;"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-1 0-.5514.4482-1 .9993-1C18.0741 13.3414 18.5227 13.79 18.5227 14.3414c0 .5514-.4486 1-.9997 1zm-11.046 0c-.5511 0-.9993-.4486-.9993-1 0-.5514.4482-1 .9993-1C6.0278 13.3414 6.4764 13.79 6.4764 14.3414c0 .5514-.4486 1-.9994 1zm11.4045-6.02l1.996-3.456c.145-.2513.06-.5727-.1913-.7177-.251-.145-.5724-.06-.7174.1913l-2.0232 3.5042C15.4858 8.3503 13.792 8.005 12 8.005c-1.792 0-3.4858.3453-4.9456.8432L5.0312 5.344c-.145-.2513-.4664-.3363-.7174-.1913-.2513.145-.3363.4664-.1913.7177l1.996 3.456C2.6877 11.2384.3435 15.1118.005 19.645h23.99c-.3385-4.5332-2.6827-8.4066-6.1135-10.3236z"/></svg>
+                            <?= __('Android Package') ?>
+                        </span>
                         <div class="app-card-header">
-                            <div class="app-card-icon">
-                                <i data-lucide="smartphone"></i>
+                            <div class="app-card-icon" style="background:rgba(61,220,132,0.12);border-color:rgba(61,220,132,0.3);color:#3ddc84;box-shadow:0 8px 24px rgba(61,220,132,0.12);">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-1 0-.5514.4482-1 .9993-1C18.0741 13.3414 18.5227 13.79 18.5227 14.3414c0 .5514-.4486 1-.9997 1zm-11.046 0c-.5511 0-.9993-.4486-.9993-1 0-.5514.4482-1 .9993-1C6.0278 13.3414 6.4764 13.79 6.4764 14.3414c0 .5514-.4486 1-.9994 1zm11.4045-6.02l1.996-3.456c.145-.2513.06-.5727-.1913-.7177-.251-.145-.5724-.06-.7174.1913l-2.0232 3.5042C15.4858 8.3503 13.792 8.005 12 8.005c-1.792 0-3.4858.3453-4.9456.8432L5.0312 5.344c-.145-.2513-.4664-.3363-.7174-.1913-.2513.145-.3363.4664-.1913.7177l1.996 3.456C2.6877 11.2384.3435 15.1118.005 19.645h23.99c-.3385-4.5332-2.6827-8.4066-6.1135-10.3236z"/></svg>
                             </div>
                             <div class="app-card-title-wrap">
                                 <h2>Noir for Android</h2>
@@ -289,63 +292,79 @@ $appDownloadUrl = $downloadHost . ($publicPath ?: '') . '/download/app';
                         <div class="app-card-body">
                             <ul class="app-step-list">
                                 <li class="app-step-item">
-                                    <span class="app-step-num">1</span>
+                                    <span class="app-step-num" style="background:#3ddc84;color:#0e1f14;">1</span>
                                     <span>Download the official <strong>noir-app.apk</strong> binary directly to your Android device.</span>
                                 </li>
                                 <li class="app-step-item">
-                                    <span class="app-step-num">2</span>
+                                    <span class="app-step-num" style="background:#3ddc84;color:#0e1f14;">2</span>
                                     <span>Tap the downloaded file to install (allow "Install Unknown Apps" if prompted).</span>
                                 </li>
                                 <li class="app-step-item">
-                                    <span class="app-step-num">3</span>
+                                    <span class="app-step-num" style="background:#3ddc84;color:#0e1f14;">3</span>
                                     <span>Launch Noir for the full native Flutter experience with haptic navigation and biometric authentication.</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <div class="app-card-actions">
-                        <a href="<?= e($publicPath . '/download/app?direct=1') ?>" class="app-btn-download">
-                            <i data-lucide="download" style="width:18px;height:18px;"></i> <?= __('Download Android APK') ?>
+                        <a href="<?= e($publicPath . '/download/app?direct=1') ?>" class="app-btn-download" style="background:#324430;border:1px solid rgba(61,220,132,0.3);color:#ffffff;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="margin-right:4px;"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-1 0-.5514.4482-1 .9993-1C18.0741 13.3414 18.5227 13.79 18.5227 14.3414c0 .5514-.4486 1-.9997 1zm-11.046 0c-.5511 0-.9993-.4486-.9993-1 0-.5514.4482-1 .9993-1C6.0278 13.3414 6.4764 13.79 6.4764 14.3414c0 .5514-.4486 1-.9994 1zm11.4045-6.02l1.996-3.456c.145-.2513.06-.5727-.1913-.7177-.251-.145-.5724-.06-.7174.1913l-2.0232 3.5042C15.4858 8.3503 13.792 8.005 12 8.005c-1.792 0-3.4858.3453-4.9456.8432L5.0312 5.344c-.145-.2513-.4664-.3363-.7174-.1913-.2513.145-.3363.4664-.1913.7177l1.996 3.456C2.6877 11.2384.3435 15.1118.005 19.645h23.99c-.3385-4.5332-2.6827-8.4066-6.1135-10.3236z"/></svg> <?= __('Download Android APK') ?>
                         </a>
                     </div>
                 </div>
 
                 <!-- iOS Card -->
-                <div class="app-card <?= $isIos ? 'featured' : '' ?>">
+                <div class="app-card <?= $isIos ? 'featured' : '' ?>" id="ios-card">
                     <div>
-                        <span class="app-card-badge"><i data-lucide="apple" style="width:12px;height:12px;"></i> <?= __('Apple iOS') ?></span>
+                        <span class="app-card-badge" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.22);color:#ffffff;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:inline-block;vertical-align:-1px;"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                            <?= __('Apple iOS') ?>
+                        </span>
                         <div class="app-card-header">
-                            <div class="app-card-icon">
-                                <i data-lucide="apple"></i>
+                            <div class="app-card-icon" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.22);color:#ffffff;box-shadow:0 8px 24px rgba(255,255,255,0.06);">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
                             </div>
                             <div class="app-card-title-wrap">
                                 <h2>Noir for iPhone &amp; iPad</h2>
-                                <span>Native Web Companion &bull; Zero App Store Friction</span>
+                                <span style="color:#b8af84;">Coming Soon to App Store</span>
                             </div>
                         </div>
+
+                        <!-- Coming Soon Banner -->
+                        <div style="background:linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:20px;margin-bottom:20px;text-align:center;">
+                            <div style="margin-bottom:12px;display:flex;justify-content:center;">
+                                <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);display:grid;place-items:center;color:#ffffff;">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                                </div>
+                            </div>
+                            <p style="font-size:15px;font-weight:600;color:#ffffff;margin:0 0 6px;"><?= __('Native iOS App In Development') ?></p>
+                            <p style="font-size:13px;color:#8c9381;margin:0;line-height:1.5;"><?= __('Our iOS app is currently in preparation for the Apple App Store. In the meantime, enjoy the full Noir experience using our Web App below.') ?></p>
+                        </div>
+
                         <div class="app-card-body">
+                            <p style="font-size:12px;color:#b8af84;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin:0 0 12px;"><?= __('Use Noir as a Web App Now') ?></p>
                             <ul class="app-step-list">
                                 <li class="app-step-item">
-                                    <span class="app-step-num">1</span>
+                                    <span class="app-step-num" style="background:#ffffff;color:#171914;">1</span>
                                     <span>Open this website in <strong>Safari</strong> on your iPhone or iPad.</span>
                                 </li>
                                 <li class="app-step-item">
-                                    <span class="app-step-num">2</span>
+                                    <span class="app-step-num" style="background:#ffffff;color:#171914;">2</span>
                                     <span>Tap the <strong>Share</strong> button <i data-lucide="share" style="width:14px;height:14px;vertical-align:middle;"></i> at the bottom of Safari.</span>
                                 </li>
                                 <li class="app-step-item">
-                                    <span class="app-step-num">3</span>
-                                    <span>Select <strong>"Add to Home Screen"</strong> <i data-lucide="plus-square" style="width:14px;height:14px;vertical-align:middle;"></i> and tap <strong>Add</strong>.</span>
+                                    <span class="app-step-num" style="background:#ffffff;color:#171914;">3</span>
+                                    <span>Select <strong>"Add to Home Screen"</strong> <i data-lucide="plus-square" style="width:14px;height:14px;vertical-align:middle;"></i> — it works just like a native app!</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <div class="app-card-actions">
-                        <a href="<?= e($publicPath . '/') ?>" class="app-btn-download" style="background:#2f3427;">
-                            <i data-lucide="compass" style="width:18px;height:18px;"></i> <?= __('Open in Safari & Add to Home') ?>
+                        <a href="<?= e($publicPath . '/') ?>" class="app-btn-download" style="background:#262a22;border:1px solid rgba(255,255,255,0.18);">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="margin-right:4px;"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg> <?= __('Add to Home Screen (Safari)') ?>
                         </a>
                         <a href="<?= e($publicPath . '/download/app?direct=1') ?>" class="app-btn-outline">
-                            <i data-lucide="download" style="width:15px;height:15px;"></i> <?= __('Download Android APK Instead') ?>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="margin-right:4px;"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-1 0-.5514.4482-1 .9993-1C18.0741 13.3414 18.5227 13.79 18.5227 14.3414c0 .5514-.4486 1-.9997 1zm-11.046 0c-.5511 0-.9993-.4486-.9993-1 0-.5514.4482-1 .9993-1C6.0278 13.3414 6.4764 13.79 6.4764 14.3414c0 .5514-.4486 1-.9994 1zm11.4045-6.02l1.996-3.456c.145-.2513.06-.5727-.1913-.7177-.251-.145-.5724-.06-.7174.1913l-2.0232 3.5042C15.4858 8.3503 13.792 8.005 12 8.005c-1.792 0-3.4858.3453-4.9456.8432L5.0312 5.344c-.145-.2513-.4664-.3363-.7174-.1913-.2513.145-.3363.4664-.1913.7177l1.996 3.456C2.6877 11.2384.3435 15.1118.005 19.645h23.99c-.3385-4.5332-2.6827-8.4066-6.1135-10.3236z"/></svg> <?= __('Download Android APK Instead') ?>
                         </a>
                     </div>
                 </div>
