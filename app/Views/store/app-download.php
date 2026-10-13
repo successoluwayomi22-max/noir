@@ -264,6 +264,12 @@ $appDownloadUrl = $downloadHost . ($publicPath ?: '') . '/download/app';
                 <p class="eyebrow"><?= __('Maison Mobile Ecosystem') ?></p>
                 <h1><?= __('Carry Noir Wherever You Are.') ?></h1>
                 <p><?= __('Experience tailored luxury shopping, one-touch express biometric checkout, live order dispatch tracing, and our private concierge on both Apple iOS & Android.') ?></p>
+                <?php if (!empty($errorMessage)): ?>
+                    <div style="margin-top: 20px; background: rgba(184, 175, 132, 0.15); border: 1px solid #b8af84; color: #f5f5ef; padding: 14px 20px; border-radius: 12px; font-size: 14px;">
+                        <i data-lucide="info" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 6px;"></i>
+                        <?= e($errorMessage) ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="app-hub-grid">

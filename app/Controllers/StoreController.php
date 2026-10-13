@@ -695,6 +695,16 @@ final class StoreController
             exit;
         }
 
+        // Check for external direct download URL (e.g. GitHub Releases, Google Drive, Cloudflare R2)
+        $externalUrl = config('app_download_url') 
+            ?: store_setting('app_download_url') 
+            ?: (getenv('APP_DOWNLOAD_URL') ?: ($_ENV['APP_DOWNLOAD_URL'] ?? ''));
+
+        if (!empty($externalUrl)) {
+            header('Location: ' . $externalUrl, true, 302);
+            exit;
+        }
+
         $apkPath = BASE_PATH . '/public/downloads/noir-app.apk';
         if (!file_exists($apkPath)) {
             $debugPath = BASE_PATH . '/mobile/build/app/outputs/flutter-apk/app-debug.apk';
@@ -702,7 +712,12 @@ final class StoreController
                 $apkPath = $debugPath;
             } else {
                 http_response_code(404);
-                echo 'Noir Mobile App package is currently being prepared. Please check back shortly.';
+                ViewData::render(BASE_PATH . '/app/Views/store/app-download.php', [
+                    'publicPath' => $this->publicPath(),
+                    'storeName'  => store_setting('store_name', 'Noir & Co.'),
+                    'isIos'      => $isIos,
+                    'errorMessage' => 'Noir Mobile App package is currently being prepared for direct download. Please install as PWA or check back shortly.',
+                ]);
                 exit;
             }
         }
