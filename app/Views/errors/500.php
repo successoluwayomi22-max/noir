@@ -201,7 +201,41 @@ $publicPath = $base ?: '';
                     <?= __('Contact Concierge') ?>
                 </a>
             </div>
+            <div id="recovery-status" style="margin-top: 20px; font-size: 12px; color: var(--soft-olive); opacity: 0.8;"></div>
         </div>
     </main>
+    <script nonce="<?= csp_nonce() ?>">
+        (function() {
+            var healthUrl = '<?= e($publicPath . "/health") ?>';
+            var statusEl = document.getElementById('recovery-status');
+            var checkCount = 0;
+            var maxChecks = 30;
+
+            function checkRecovery() {
+                checkCount++;
+                if (checkCount > maxChecks) return;
+
+                fetch(healthUrl, { cache: 'no-store' })
+                    .then(function(res) {
+                        if (res.ok) {
+                            if (statusEl) {
+                                statusEl.textContent = 'Connection restored. Returning you to your session...';
+                            }
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1200);
+                        } else {
+                            setTimeout(checkRecovery, 3000);
+                        }
+                    })
+                    .catch(function() {
+                        setTimeout(checkRecovery, 3000);
+                    });
+            }
+
+            // Start checking after 2 seconds
+            setTimeout(checkRecovery, 2000);
+        })();
+    </script>
 </body>
 </html>

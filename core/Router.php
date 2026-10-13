@@ -105,18 +105,7 @@ final class Router
             try {
                 return is_array($route['handler']) ? (new $route['handler'][0]())->{$route['handler'][1]}($request) : ($route['handler'])($request);
             } catch (\Throwable $e) {
-                error_log('Route dispatch error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
-                http_response_code(500);
-                if (str_starts_with($path, '/api/') || str_contains((string)($_SERVER['HTTP_ACCEPT'] ?? ''), 'application/json')) {
-                    header('Content-Type: application/json');
-                    echo json_encode(['error' => 'Internal server error', 'message' => 'An unexpected interruption occurred. Please try again.']);
-                    exit;
-                }
-                if (file_exists(BASE_PATH . '/app/Views/errors/500.php')) {
-                    require BASE_PATH . '/app/Views/errors/500.php';
-                    exit;
-                }
-                throw $e;
+                ExceptionHandler::handleException($e);
             }
         }
         http_response_code(404);

@@ -38,7 +38,11 @@ final class ExceptionHandler
         $traceId = substr(bin2hex(random_bytes(8)), 0, 12);
         self::logStructuredError($e, $traceId);
 
-        $isDebug = (bool)(Container::get('config')['debug'] ?? false);
+        $isDebug = false;
+        try {
+            $isDebug = (bool)(Container::get('config')['debug'] ?? false);
+        } catch (\Throwable) {}
+
         $isJson = str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/api/')
             || str_contains((string)($_SERVER['HTTP_ACCEPT'] ?? ''), 'application/json');
 
@@ -58,10 +62,27 @@ final class ExceptionHandler
         }
 
         if (!$isDebug) {
+            // Try the styled error view first; if it throws (e.g. DB down
+            // breaking store_brand_style), fall through to the safe inline HTML.
             $errorFile = BASE_PATH . '/app/Views/errors/500.php';
             if (file_exists($errorFile)) {
-                require $errorFile;
-                exit;
+                try {
+                    // Clean any partial output that may have been buffered
+                    while (ob_get_level() > 0) {
+                        @ob_end_clean();
+                    }
+                    require $errorFile;
+                    exit;
+                } catch (\Throwable $viewError) {
+                    // Log the secondary failure so it can be diagnosed
+                    error_log('[ExceptionHandler] 500 view failed: ' . $viewError->getMessage());
+                    while (ob_get_level() > 0) {
+                        @ob_end_clean();
+                    }
+                    if (!headers_sent()) {
+                        http_response_code(500);
+                    }
+                }
             }
 
             echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>System Error — Noir &amp; Co.</title><style>body{font-family:system-ui,sans-serif;background:#f7f7f2;color:#252820;display:grid;place-items:center;height:100vh;margin:0}.card{background:#fff;border:1px solid #e5e5dd;padding:2.5rem;border-radius:1.5rem;max-width:440px;box-shadow:0 8px 30px rgba(0,0,0,.04);text-align:center}code{background:#f0f1ec;padding:3px 8px;border-radius:6px;font-size:12px}</style></head><body><div class="card"><h1 style="font-size:1.5rem;margin-bottom:0.5rem">Something went wrong</h1><p style="font-size:0.9rem;color:#77796f;margin-bottom:1.5rem">Our atelier engineers have been notified. Please quote this reference code when contacting support:</p><code>REF-' . htmlspecialchars($traceId) . '</code></div></body></html>';

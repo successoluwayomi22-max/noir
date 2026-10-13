@@ -9,8 +9,8 @@ $card = static function (array $product) use ($publicPath): void { require BASE_
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VIP Runway Live Stream | <?= e(store_setting('store_name', 'Noir & Co.')) ?></title>
-    <link rel="stylesheet" href="<?= e(($base ?: '') . '/assets/css/app.min.css') ?>">
-    <script src="<?= e(($base ?: '') . '/assets/js/lucide.min.js?v=1.0.0') ?>"></script>
+    <link rel="stylesheet" href="<?= e(($publicPath ?: '') . '/assets/css/app.min.css') ?>">
+    <script src="<?= e(($publicPath ?: '') . '/assets/js/lucide.min.js?v=1.0.0') ?>"></script>
     <?= store_brand_style() ?>
     <style>
         body, html { height: 100%; margin: 0; overflow: hidden; background: #000; }

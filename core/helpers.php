@@ -11,6 +11,19 @@ require_once __DIR__ . '/media.php';
 require_once __DIR__ . '/i18n.php';
 
 // ---------------------------------------------------------------------------
+// Defensive fallback: ensure csp_nonce() is always available, even when
+// the exception handler renders before bootstrap.php defines CSP_NONCE.
+// ---------------------------------------------------------------------------
+if (!defined('CSP_NONCE')) {
+    define('CSP_NONCE', base64_encode(random_bytes(16)));
+}
+if (!function_exists('csp_nonce')) {
+    function csp_nonce(): string {
+        return CSP_NONCE;
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Core utilities
 // ---------------------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 declare(strict_types=1);
 $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
 $user = \Noir\Core\Container::get('auth')->user() ?? [];

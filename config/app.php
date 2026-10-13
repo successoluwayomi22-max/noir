@@ -33,7 +33,30 @@ return [
         'max_requests_per_window' => max(1, min(100, (int)$env('AI_ASSISTANT_MAX_REQUESTS', 12))),
         'rate_limit_window' => max(60, min(3600, (int)$env('AI_ASSISTANT_RATE_LIMIT_WINDOW', 600))),
     ],
-    'database' => ['host' => $env('DB_HOST', '127.0.0.1'), 'port' => (int)$env('DB_PORT', 3306), 'name' => $env('DB_DATABASE', 'noir'), 'user' => $env('DB_USERNAME', 'root'), 'password' => $env('DB_PASSWORD', ''), 'charset' => $env('DB_CHARSET', 'utf8mb4')],
+    'database' => (static function () use ($env): array {
+        $dbConfig = [
+            'host' => $env('DB_HOST', '127.0.0.1'),
+            'port' => (int)$env('DB_PORT', 3306),
+            'name' => $env('DB_DATABASE', 'noir'),
+            'user' => $env('DB_USERNAME', 'root'),
+            'password' => (string)$env('DB_PASSWORD', ''),
+            'charset' => $env('DB_CHARSET', 'utf8mb4'),
+            'ssl' => filter_var($env('DB_SSL', false), FILTER_VALIDATE_BOOL),
+        ];
+        $url = $env('DATABASE_URL') ?: $env('MYSQL_URL') ?: $env('AIVEN_DATABASE_URL') ?: $env('AIVEN_URL');
+        if (!empty($url)) {
+            $parsed = parse_url((string)$url);
+            if ($parsed) {
+                if (!empty($parsed['host'])) $dbConfig['host'] = $parsed['host'];
+                if (!empty($parsed['port'])) $dbConfig['port'] = (int)$parsed['port'];
+                if (!empty($parsed['user'])) $dbConfig['user'] = urldecode($parsed['user']);
+                if (isset($parsed['pass'])) $dbConfig['password'] = urldecode($parsed['pass']);
+                if (!empty($parsed['path'])) $dbConfig['name'] = ltrim($parsed['path'], '/');
+                $dbConfig['ssl'] = true;
+            }
+        }
+        return $dbConfig;
+    })(),
     'analytics' => ['google_measurement_id' => trim((string)$env('GOOGLE_ANALYTICS_ID', ''))],
     'payments' => [
         'default_provider' => $env('PAYMENT_DEFAULT_PROVIDER', 'paystack'),
