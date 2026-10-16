@@ -12,7 +12,20 @@
           "package_name": "com.noir.app.noir_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "941205566954-25e3ie2bpgiagk6k0ifps09cdqgcimtn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.noir.app.noir_app",
+            "certificate_hash": "3ad3136d92502940436aaca2108b11aa655ac5dc"
+          }
+        },
+        {
+          "client_id": "941205566954-rsn78i59o1d4c953m4oug46020p3t6vr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC_bLW7koCWvkk6qjRXoo8EaGb5KZx_Sbc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "941205566954-rsn78i59o1d4c953m4oug46020p3t6vr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "941205566954-32a9l1tvpflhof7grvhopon55s9ejld5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.noir.app.noir-app"
+              }
+            }
+          ]
         }
       }
     }
