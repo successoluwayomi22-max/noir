@@ -8,6 +8,7 @@ import '../../providers/cart_provider.dart';
 import '../../providers/currency_provider.dart';
 import '../../providers/settings_provider.dart';
 import '../../theme.dart';
+import '../../models/product.dart';
 import 'product_detail_screen.dart';
 
 class AiStylistScreen extends StatefulWidget {
@@ -888,7 +889,7 @@ class _AiStylistScreenState extends State<AiStylistScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: CachedNetworkImage(
-                imageUrl: image.startsWith('http') ? image : 'http://10.0.2.2:8000$image',
+                imageUrl: Product.fixImageUrl(image),
                 width: 54,
                 height: 54,
                 fit: BoxFit.cover,

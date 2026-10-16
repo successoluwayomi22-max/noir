@@ -41,7 +41,7 @@ final class SecurityHeadersMiddleware
             "img-src 'self' data: https: blob: https://www.gstatic.com https://www.google.com",
             "media-src 'self' https: data: blob:",
             "frame-src 'self' https://js.paystack.co https://www.google.com https://recaptcha.google.com https://recaptcha.net https://www.recaptcha.net",
-            "connect-src 'self' https://api.paystack.co https://maps.googleapis.com https://*.trycloudflare.com https://www.gstatic.com https://www.google.com https://recaptcha.net https://www.recaptcha.net wss: ws:",
+            "connect-src 'self' https://api.paystack.co https://maps.googleapis.com https://*.onrender.com https://*.trycloudflare.com https://www.gstatic.com https://www.google.com https://recaptcha.net https://www.recaptcha.net wss: ws:",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self' https://accounts.google.com",

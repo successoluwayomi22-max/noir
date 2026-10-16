@@ -92,8 +92,8 @@ class AboutScreen extends StatelessWidget {
 
             // Info tiles
             _buildSection(context, [
-              _buildTile(context, Icons.language_rounded, 'Website', 'noir.atelier.com', () {
-                _launchUrl('http://192.168.61.108/noir/public');
+              _buildTile(context, Icons.language_rounded, 'Website', 'noir.onrender.com', () {
+                _launchUrl('https://noir-73fy.onrender.com');
               }),
               _buildTile(context, Icons.email_outlined, 'Support Email', storeEmail, () => _launchUrl('mailto:$storeEmail')),
               _buildTile(context, Icons.phone_outlined, 'Contact Phone', storePhone, () => _launchUrl('tel:${storePhone.replaceAll(' ', '')}')),

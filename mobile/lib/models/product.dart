@@ -18,9 +18,9 @@ class Product {
     if (path == null || path.isEmpty) return '';
     if (path.startsWith('http')) return path;
     
-    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://192.168.61.108/noir/public';
+    final baseUrl = dotenv.env['API_BASE_URL'] ?? 'https://noir-73fy.onrender.com';
     final uri = Uri.tryParse(baseUrl);
-    final origin = uri != null ? '${uri.scheme}://${uri.host}${uri.hasPort ? ':${uri.port}' : ''}' : 'http://192.168.61.108';
+    final origin = uri != null ? '${uri.scheme}://${uri.host}${uri.hasPort ? ':${uri.port}' : ''}' : 'https://noir-73fy.onrender.com';
 
     if (path.startsWith('/noir/public/')) {
       return '$origin$path';

@@ -99,19 +99,30 @@ class _OfflineScreenState extends State<OfflineScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Enter the backend URL (LAN IP or public tunnel):',
+              'Enter the backend URL or reset to the official production server:',
               style: GoogleFonts.urbanist(fontSize: 13, color: Colors.grey),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: controller,
               decoration: InputDecoration(
-                hintText: 'e.g. http://192.168.164.108/noir/public',
+                hintText: 'https://noir-73fy.onrender.com',
                 hintStyle: GoogleFonts.urbanist(fontSize: 12),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               style: GoogleFonts.urbanist(fontSize: 13),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () {
+                controller.text = 'https://noir-73fy.onrender.com';
+              },
+              icon: const Icon(Icons.cloud_done_rounded, size: 16),
+              label: Text(
+                'Use Render Production Server',
+                style: GoogleFonts.urbanist(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
             ),
           ],
         ),
@@ -128,6 +139,7 @@ class _OfflineScreenState extends State<OfflineScreen> {
                 final messenger = ScaffoldMessenger.of(context);
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.setString('custom_api_base_url', newUrl);
+                api.setBaseUrl(newUrl);
                 if (mounted) {
                   navigator.pop();
                   messenger.showSnackBar(

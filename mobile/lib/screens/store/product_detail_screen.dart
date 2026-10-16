@@ -443,7 +443,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     icon: const Icon(Icons.share_outlined, size: 18, color: Colors.white),
                     onPressed: () {
                       final slugOrId = (p.slug != null && p.slug!.isNotEmpty) ? p.slug! : p.id.toString();
-                      final url = 'http://192.168.61.108/noir/public/product/$slugOrId';
+                      final url = 'https://noir-73fy.onrender.com/product/$slugOrId';
                       NoirShare.share(
                         context,
                         text: 'Discover "${p.name}" at Noir & Co. Luxury Atelier:\n$url',

@@ -504,7 +504,7 @@ class _ReelItemState extends State<_ReelItem> with TickerProviderStateMixin {
   void _initPlayer() {
     String rawUrl = widget.data['url']?.toString() ?? '';
     if (rawUrl.startsWith('/')) {
-      final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://192.168.61.108/noir/public';
+      final baseUrl = dotenv.env['API_BASE_URL'] ?? 'https://noir-73fy.onrender.com';
       rawUrl = '$baseUrl$rawUrl';
     }
     if (rawUrl.isEmpty || !rawUrl.startsWith('http')) {
@@ -612,7 +612,7 @@ class _ReelItemState extends State<_ReelItem> with TickerProviderStateMixin {
     final user = widget.data['user'] ?? '@noir.atelier';
     NoirShare.share(
       context,
-      text: 'Watch this luxury runway reel by $user on ${context.read<SettingsProvider>().brandName}:\n"$title"\n\nhttp://192.168.61.108/noir/public',
+      text: 'Watch this luxury runway reel by $user on ${context.read<SettingsProvider>().brandName}:\n"$title"\n\nhttps://noir-73fy.onrender.com',
       subject: '${context.read<SettingsProvider>().brandName} Reel',
     );
   }

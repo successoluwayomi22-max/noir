@@ -318,10 +318,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
     NoirShare.share(
       context,
       text:
-          'Track my $brand luxury dispatch #$_orderNumber in real-time:\nhttp://192.168.61.108/noir/public/order-tracking?ref=$_orderNumber',
+          'Track my $brand luxury dispatch #$_orderNumber in real-time:\nhttps://noir-73fy.onrender.com/order-tracking?ref=$_orderNumber',
       subject: '$brand Luxury Dispatch',
       fallbackCopyText:
-          'http://192.168.61.108/noir/public/order-tracking?ref=$_orderNumber',
+          'https://noir-73fy.onrender.com/order-tracking?ref=$_orderNumber',
     );
   }
 

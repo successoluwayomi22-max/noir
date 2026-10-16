@@ -55,24 +55,31 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'providers/settings_provider.dart';
 
-import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+
+
+const String kProductionBaseUrl = 'https://noir-73fy.onrender.com';
 
 String getBaseUrl([SharedPreferences? prefs]) {
-  final customUrl = prefs?.getString('custom_api_base_url');
-  if (customUrl != null && customUrl.trim().isNotEmpty) {
-    return customUrl.trim();
+  final customUrl = prefs?.getString('custom_api_base_url')?.trim();
+  if (customUrl != null && customUrl.isNotEmpty) {
+    // Ephemeral Cloudflare quick tunnels expire quickly. If a stale/expired tunnel was saved,
+    // purge it so the app automatically connects to the stable Render production server.
+    if (customUrl.contains('trycloudflare.com')) {
+      prefs?.remove('custom_api_base_url');
+    } else {
+      return customUrl;
+    }
   }
 
-  final envUrl = dotenv.env['API_BASE_URL'];
+  final envUrl = dotenv.env['API_BASE_URL']?.trim();
   if (envUrl != null && envUrl.isNotEmpty) {
+    if (envUrl.contains('trycloudflare.com')) {
+      return kProductionBaseUrl;
+    }
     return envUrl;
   }
 
-  if (kIsWeb || defaultTargetPlatform == TargetPlatform.windows) {
-    return 'http://127.0.0.1/noir/public';
-  }
-  
-  return 'http://192.168.164.108/noir/public';
+  return kProductionBaseUrl;
 }
 
 void main() async {
@@ -91,6 +98,12 @@ void main() async {
   }
 
   final prefs = await SharedPreferences.getInstance();
+  // Ensure any stale trycloudflare link in SharedPreferences is purged immediately
+  final staleCustom = prefs.getString('custom_api_base_url');
+  if (staleCustom != null && staleCustom.contains('trycloudflare.com')) {
+    await prefs.remove('custom_api_base_url');
+  }
+
   final showOnboarding = !(prefs.getBool('onboarding_complete') ?? false);
 
   final api = NoirApiClient(baseUrl: getBaseUrl(prefs));

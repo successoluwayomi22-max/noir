@@ -74,10 +74,16 @@ class AuthProvider extends ChangeNotifier {
 
   String _sanitizeErrorMessage(dynamic e) {
     final str = e.toString();
-    if (str.contains('ApiException: 10') || str.contains('sign_in_failed') || str.contains('DEVELOPER_ERROR')) {
-      return 'Google Sign-In is not configured for this app build (Firebase SHA-1 fingerprint required). Please sign in with email and password.';
+    final lower = str.toLowerCase();
+    if (lower.contains('api10') ||
+        lower.contains('apiexception: 10') ||
+        lower.contains('sign_in_failed') ||
+        lower.contains('developer_error') ||
+        (lower.contains('platformexception') && lower.contains('sign_in')) ||
+        (lower.contains('google.android.gms') && lower.contains('10'))) {
+      return 'Google Sign-In is not configured for this build (Firebase SHA-1 fingerprint required). Please sign in with your email and password.';
     }
-    if (str.contains('ApiException: 12500')) {
+    if (lower.contains('apiexception: 12500') || lower.contains('12500')) {
       return 'Google Sign-In service unavailable. Please check your Google Play Services or use email sign in.';
     }
     if (str.contains('SocketException') ||

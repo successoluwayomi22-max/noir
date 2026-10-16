@@ -7,11 +7,12 @@ import 'models/product.dart';
 import 'models/order.dart';
 
 class NoirApiClient {
-  final String baseUrl;
+  String baseUrl;
   String? _token;
 
   NoirApiClient({required this.baseUrl, this._token});
 
+  void setBaseUrl(String url) => baseUrl = url;
   void setToken(String token) => _token = token;
   void clearToken() => _token = null;
   String? get token => _token;

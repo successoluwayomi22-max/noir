@@ -234,7 +234,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
     final caption = widget.post['caption'] ?? brand;
     NoirShare.share(
       context,
-      text: '$caption\n\nShared from $brand Atelier by $handle\nhttp://192.168.61.108/noir/public',
+      text: '$caption\n\nShared from $brand Atelier by $handle\nhttps://noir-73fy.onrender.com',
       subject: '$brand Atelier Style',
     );
   }
@@ -264,7 +264,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
               title: const Text('Copy Post Link'),
               onTap: () {
                 Navigator.pop(ctx);
-                Clipboard.setData(const ClipboardData(text: 'http://192.168.61.108/noir/public/community'));
+                Clipboard.setData(const ClipboardData(text: 'https://noir-73fy.onrender.com/community'));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: const Text('Post link copied to clipboard!'),
@@ -511,7 +511,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
     final caption = widget.post['caption']?.toString() ?? '';
     String imageUrl = widget.post['image_url']?.toString() ?? '';
     if (imageUrl.startsWith('/')) {
-      final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://192.168.61.108/noir/public';
+      final baseUrl = dotenv.env['API_BASE_URL'] ?? 'https://noir-73fy.onrender.com';
       imageUrl = '$baseUrl$imageUrl';
     }
     final productsCount = (widget.post['products_count'] as num?)?.toInt() ?? 0;
