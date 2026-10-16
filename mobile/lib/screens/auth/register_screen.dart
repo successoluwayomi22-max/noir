@@ -111,18 +111,55 @@ class _RegisterScreenState extends State<RegisterScreen> {
               if (auth.error != null)
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(14),
-                  margin: EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.all(14),
+                  margin: const EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.error.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    auth.error!,
-                    style: GoogleFonts.urbanist(
-                      color: Theme.of(context).colorScheme.error,
-                      fontSize: 13,
+                    color: Theme.of(context).colorScheme.error.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3),
                     ),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.error_outline_rounded,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              auth.error!,
+                              style: GoogleFonts.urbanist(
+                                color: Theme.of(context).colorScheme.error,
+                                fontSize: 13,
+                                height: 1.35,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            if (auth.error!.contains('server') || auth.error!.contains('connection')) ...[
+                              const SizedBox(height: 8),
+                              InkWell(
+                                onTap: () => Navigator.of(context).pushNamed('/offline'),
+                                child: Text(
+                                  'Diagnose Connection / Change IP →',
+                                  style: GoogleFonts.urbanist(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 

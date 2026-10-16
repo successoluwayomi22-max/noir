@@ -47,6 +47,9 @@ import 'screens/store/gift_card_screen.dart';
 import 'screens/store/video_commerce_screen.dart';
 import 'screens/social/community_feed_screen.dart';
 import 'screens/app_lock_wrapper.dart';
+import 'screens/error/offline_screen.dart';
+import 'screens/error/server_error_screen.dart';
+import 'screens/error/not_found_screen.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -54,21 +57,22 @@ import 'providers/settings_provider.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 
-String getBaseUrl() {
+String getBaseUrl([SharedPreferences? prefs]) {
+  final customUrl = prefs?.getString('custom_api_base_url');
+  if (customUrl != null && customUrl.trim().isNotEmpty) {
+    return customUrl.trim();
+  }
+
   final envUrl = dotenv.env['API_BASE_URL'];
-  if (envUrl != null && envUrl.isNotEmpty && !envUrl.contains('trycloudflare.com')) {
+  if (envUrl != null && envUrl.isNotEmpty) {
     return envUrl;
   }
 
-  if (kIsWeb) {
+  if (kIsWeb || defaultTargetPlatform == TargetPlatform.windows) {
     return 'http://127.0.0.1/noir/public';
   }
   
-  if (defaultTargetPlatform == TargetPlatform.windows) {
-    return 'http://127.0.0.1/noir/public';
-  }
-  
-  return 'http://192.168.61.108/noir/public';
+  return 'http://192.168.164.108/noir/public';
 }
 
 void main() async {
@@ -86,7 +90,10 @@ void main() async {
     debugPrint("Firebase initialization notice: $e");
   }
 
-  final api = NoirApiClient(baseUrl: getBaseUrl());
+  final prefs = await SharedPreferences.getInstance();
+  final showOnboarding = !(prefs.getBool('onboarding_complete') ?? false);
+
+  final api = NoirApiClient(baseUrl: getBaseUrl(prefs));
 
   final authProvider = AuthProvider(api: api);
   final cartProvider = CartProvider();
@@ -117,8 +124,7 @@ void main() async {
   final settingsProvider = SettingsProvider(api: api);
   final currencyProvider = CurrencyProvider();
 
-  final prefs = await SharedPreferences.getInstance();
-  final showOnboarding = !(prefs.getBool('onboarding_complete') ?? false);
+
 
   runApp(
     NoirApp(
@@ -241,7 +247,13 @@ class NoirApp extends StatelessWidget {
           '/gift-cards': (context) => GiftCardScreen(),
           '/video-commerce': (context) => VideoCommerceScreen(),
           '/community-feed': (context) => CommunityFeedScreen(),
+          '/offline': (context) => const OfflineScreen(),
+          '/server-error': (context) => const ServerErrorScreen(),
+          '/not-found': (context) => const NotFoundScreen(),
         },
+        onUnknownRoute: (settings) => MaterialPageRoute(
+          builder: (_) => NotFoundScreen(routeName: settings.name),
+        ),
         onGenerateRoute: (settings) {
 
           // Handle /order-success with arguments

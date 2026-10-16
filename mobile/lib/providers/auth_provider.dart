@@ -72,6 +72,43 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  String _sanitizeErrorMessage(dynamic e) {
+    final str = e.toString();
+    if (str.contains('ApiException: 10') || str.contains('sign_in_failed') || str.contains('DEVELOPER_ERROR')) {
+      return 'Google Sign-In is not configured for this app build (Firebase SHA-1 fingerprint required). Please sign in with email and password.';
+    }
+    if (str.contains('ApiException: 12500')) {
+      return 'Google Sign-In service unavailable. Please check your Google Play Services or use email sign in.';
+    }
+    if (str.contains('SocketException') ||
+        str.contains('ClientException') ||
+        str.contains('Failed host lookup') ||
+        str.contains('Connection refused') ||
+        str.contains('Connection timed out') ||
+        str.contains('HandshakeException')) {
+      return 'Unable to reach the Noir server. Please check your Wi-Fi/cellular connection and ensure the server is active.';
+    }
+    if (str.contains('already registered') || str.contains('already exists')) {
+      return 'An account with this email already exists. Please sign in instead.';
+    }
+    if (str.contains('Password must be at least 8 characters')) {
+      return 'Password must be at least 8 characters and contain both letters and numbers.';
+    }
+    if (str.contains('Invalid email') || str.contains('Invalid email/username or password')) {
+      return 'Invalid email or password. Please verify your credentials and try again.';
+    }
+
+    var clean = str
+        .replaceAll(RegExp(r'^Exception:\s*'), '')
+        .replaceAll(RegExp(r'^PlatformException\([^,]+,\s*'), '')
+        .replaceAll(RegExp(r',\s*null,\s*null\)$'), '')
+        .trim();
+    if (clean.isEmpty) {
+      return 'An unexpected error occurred. Please try again.';
+    }
+    return clean;
+  }
+
   Future<bool> login(String email, String password) async {
     _isLoading = true;
     _error = null;
@@ -96,7 +133,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _error = e.toString().replaceAll('Exception: ', '');
+      _error = _sanitizeErrorMessage(e);
       _isLoading = false;
       notifyListeners();
       return false;
@@ -109,7 +146,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
     try {
       final googleSignIn = GoogleSignIn(
-        clientId: '861686195020-4k171a4biq57lssel27v06m6vchfn28e.apps.googleusercontent.com',
+        scopes: ['email', 'profile'],
       );
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
@@ -143,7 +180,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _error = e.toString().replaceAll('Exception: ', '');
+      _error = _sanitizeErrorMessage(e);
       _isLoading = false;
       notifyListeners();
       return false;
@@ -174,7 +211,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _error = e.toString().replaceAll('Exception: ', '');
+      _error = _sanitizeErrorMessage(e);
       _isLoading = false;
       notifyListeners();
       return false;

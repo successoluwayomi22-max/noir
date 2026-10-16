@@ -17,6 +17,7 @@ import '../../l10n/app_strings.dart';
 import 'cart_screen.dart';
 import 'order_tracking_screen.dart';
 import '../../widgets/size_predictor_widget.dart';
+import '../../widgets/error_state_view.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final int productId;
@@ -31,6 +32,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   List<dynamic> _images = [];
   List<dynamic> _variants = [];
   bool _loading = true;
+  bool _hasError = false;
+  bool _isOffline = false;
   int _currentImageIndex = 0;
   String? _selectedSize;
   String? _selectedColor;
@@ -77,6 +80,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Future<void> _loadProduct() async {
+    setState(() {
+      _loading = true;
+      _hasError = false;
+      _isOffline = false;
+    });
     try {
       final api = context.read<NoirApiClient>();
       final data = await api.getProductDetail(widget.productId);
@@ -86,6 +94,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           _images = data.images;
           _variants = data.variants;
           _loading = false;
+          _hasError = false;
 
           final sizesSet = <String>{};
           final colorsSet = <String>{};
@@ -106,7 +115,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         });
       }
     } catch (e) {
-      if (mounted) setState(() => _loading = false);
+      if (mounted) {
+        final errStr = e.toString();
+        final isNet = errStr.contains('SocketException') ||
+            errStr.contains('ClientException') ||
+            errStr.contains('Failed host lookup') ||
+            errStr.contains('Connection refused') ||
+            errStr.contains('Connection timed out');
+        setState(() {
+          _loading = false;
+          _hasError = true;
+          _isOffline = isNet;
+        });
+      }
     }
   }
 
@@ -347,15 +368,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       return Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
-        body: Center(
-          child: Text(
-            'Product not found',
-            style: GoogleFonts.urbanist(
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-            ),
-          ),
-        ),
+        body: _hasError
+            ? _isOffline
+                ? ErrorStateView.offline(
+                    onRetry: _loadProduct,
+                    onSecondaryAction: () => Navigator.maybePop(context),
+                  )
+                : ErrorStateView.serverError(
+                    onRetry: _loadProduct,
+                    onSecondaryAction: () => Navigator.maybePop(context),
+                  )
+            : ErrorStateView.empty(
+                title: 'Piece Not Found',
+                message: 'The requested piece could not be located in this edition.',
+                actionLabel: 'Return to Catalogue',
+                onAction: () => Navigator.maybePop(context),
+              ),
       );
     }
 

@@ -43,9 +43,10 @@ if (!function_exists('csp_nonce')) {
     }
 }
 
-// Detect host and HTTPS (including reverse proxies like Cloudflare or AWS ALB)
 $host = (string)($_SERVER['HTTP_HOST'] ?? '');
-$isLocal = str_starts_with($host, 'localhost') || str_starts_with($host, '127.0.0.1') || str_ends_with($host, '.test') || str_ends_with($host, '.local');
+$cleanHost = explode(':', $host)[0];
+$isPrivateIp = preg_match('/^(127\.|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/', $cleanHost) === 1;
+$isLocal = str_starts_with($cleanHost, 'localhost') || str_ends_with($cleanHost, '.test') || str_ends_with($cleanHost, '.local') || $isPrivateIp;
 $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
     || (isset($_SERVER['HTTP_CF_VISITOR']) && str_contains($_SERVER['HTTP_CF_VISITOR'], 'https'))

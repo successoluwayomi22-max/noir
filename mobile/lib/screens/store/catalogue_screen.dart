@@ -13,6 +13,7 @@ import '../../l10n/app_strings.dart';
 import '../../models/product.dart';
 import 'product_detail_screen.dart';
 import 'cart_screen.dart';
+import '../../widgets/error_state_view.dart';
 
 class CatalogueScreen extends StatefulWidget {
   const CatalogueScreen({super.key});
@@ -31,6 +32,9 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
   int _totalPages = 1;
   final _searchController = TextEditingController();
   bool _showSearch = false;
+  bool _hasError = false;
+  bool _isOffline = false;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -54,7 +58,13 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
   }
 
   Future<void> _loadProducts({bool append = false}) async {
-    if (!append) setState(() => _loading = true);
+    if (!append) {
+      setState(() {
+        _loading = true;
+        _hasError = false;
+        _errorMessage = null;
+      });
+    }
     try {
       final api = context.read<NoirApiClient>();
       final data = await api.getProducts(
@@ -74,21 +84,25 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
           }
           _totalPages = data.totalPages;
           _loading = false;
+          _hasError = false;
         });
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _loading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              e.toString().contains('SocketException') 
-                  ? 'Unable to connect to the server. Please check your internet connection.' 
-                  : 'An error occurred while loading products. Please try again.',
-            ),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        final errStr = e.toString();
+        final isNet = errStr.contains('SocketException') ||
+            errStr.contains('ClientException') ||
+            errStr.contains('Failed host lookup') ||
+            errStr.contains('Connection refused') ||
+            errStr.contains('Connection timed out');
+        setState(() {
+          _loading = false;
+          _hasError = true;
+          _isOffline = isNet;
+          _errorMessage = isNet
+              ? 'Unable to connect to the Noir server. Please check your connection or server status.'
+              : 'An error occurred while loading products. Please try again.';
+        });
       }
     }
   }
@@ -342,37 +356,40 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
             ),
           ),
 
-          // Products Grid
+          // Products Grid / Error States / Empty
           Expanded(
             child: _loading
                 ? _buildShimmerGrid()
-                : _products.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.shopping_bag_outlined,
-                          size: 64,
-                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'No products found',
-                          style: GoogleFonts.urbanist(
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : RefreshIndicator(
-                    onRefresh: () async {
-                      _page = 1;
-                      await _loadProducts();
-                    },
-                    child: GridView.builder(
+                : _hasError
+                    ? _isOffline
+                        ? ErrorStateView.offline(
+                            message: _errorMessage,
+                            onRetry: () => _loadProducts(),
+                          )
+                        : ErrorStateView.serverError(
+                            message: _errorMessage,
+                            onRetry: () => _loadProducts(),
+                          )
+                    : _products.isEmpty
+                        ? ErrorStateView.empty(
+                            title: 'No pieces found',
+                            message: _searchController.text.isNotEmpty
+                                ? 'No products match "${_searchController.text.trim()}".'
+                                : 'No products are currently available in this category.',
+                            actionLabel: _searchController.text.isNotEmpty ? 'Clear Search' : null,
+                            onAction: _searchController.text.isNotEmpty
+                                ? () {
+                                    _searchController.clear();
+                                    _loadProducts();
+                                  }
+                                : null,
+                          )
+                        : RefreshIndicator(
+                            onRefresh: () async {
+                              _page = 1;
+                              await _loadProducts();
+                            },
+                            child: GridView.builder(
                       padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
                       gridDelegate:
                           SliverGridDelegateWithFixedCrossAxisCount(

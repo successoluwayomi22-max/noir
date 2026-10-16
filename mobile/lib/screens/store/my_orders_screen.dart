@@ -7,6 +7,7 @@ import '../../theme.dart';
 import '../../models/order.dart';
 import '../../l10n/app_strings.dart';
 import 'order_detail_screen.dart';
+import '../../widgets/error_state_view.dart';
 
 class MyOrdersScreen extends StatefulWidget {
   const MyOrdersScreen({super.key});
@@ -18,6 +19,8 @@ class MyOrdersScreen extends StatefulWidget {
 class _MyOrdersScreenState extends State<MyOrdersScreen> {
   List<Order> _orders = [];
   bool _loading = true;
+  bool _hasError = false;
+  bool _isOffline = false;
   int _page = 1;
   int _totalPages = 1;
   String _selectedFilter = 'all';
@@ -31,6 +34,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
   Future<void> _loadOrders({int page = 1}) async {
     setState(() {
       _loading = true;
+      _hasError = false;
     });
     try {
       final api = context.read<NoirApiClient>();
@@ -41,13 +45,22 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
           _page = data.page;
           _totalPages = data.totalPages;
           _loading = false;
+          _hasError = false;
         });
       }
     } catch (e) {
       if (mounted) {
+        final errStr = e.toString();
+        final isNet = errStr.contains('SocketException') ||
+            errStr.contains('ClientException') ||
+            errStr.contains('Failed host lookup') ||
+            errStr.contains('Connection refused') ||
+            errStr.contains('Connection timed out');
         setState(() {
           _orders = [];
           _loading = false;
+          _hasError = true;
+          _isOffline = isNet;
         });
       }
     }
@@ -156,9 +169,19 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
           Expanded(
             child: _loading
                 ? Center(child: CircularProgressIndicator(color: NoirTheme.primary))
-                : _orders.isEmpty
-                    ? _buildEmpty()
-                    : _buildList(filtered),
+                : _hasError
+                    ? _isOffline
+                        ? ErrorStateView.offline(
+                            message: 'Unable to synchronize your order history while offline.',
+                            onRetry: () => _loadOrders(),
+                          )
+                        : ErrorStateView.serverError(
+                            message: 'Could not load your orders. Please check your connection and retry.',
+                            onRetry: () => _loadOrders(),
+                          )
+                    : _orders.isEmpty
+                        ? _buildEmpty()
+                        : _buildList(filtered),
           ),
         ],
       ),
