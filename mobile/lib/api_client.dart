@@ -1,10 +1,66 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as raw_http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/product.dart';
 import 'models/order.dart';
+
+/// Maison Luxury Resilient Networking Engine:
+/// Wraps all HTTP calls with automated request timeout (15s), exponential
+/// backoff retries on cold-start / gateway errors, and elegant error normalization.
+class MaisonHttp {
+  final raw_http.Client _inner = raw_http.Client();
+  static const Duration timeoutDuration = Duration(seconds: 15);
+  static const int maxRetries = 2;
+
+  Future<raw_http.Response> _execute(
+    Future<raw_http.Response> Function() requestFn,
+  ) async {
+    int attempts = 0;
+    while (true) {
+      attempts++;
+      try {
+        final res = await requestFn().timeout(timeoutDuration);
+        if ((res.statusCode == 502 || res.statusCode == 503 || res.statusCode == 504) && attempts <= maxRetries) {
+          await Future.delayed(Duration(milliseconds: 500 * attempts));
+          continue;
+        }
+        return res;
+      } catch (e) {
+        if (attempts > maxRetries) {
+          final str = e.toString();
+          if (e is TimeoutException || str.contains('TimeoutException')) {
+            throw Exception('Connection timed out. Maison server is preparing, please retry in a moment.');
+          }
+          if (str.contains('SocketException') || str.contains('ClientException') || str.contains('Failed host lookup')) {
+            throw Exception('Unable to reach the Maison server. Please check your internet connection.');
+          }
+          rethrow;
+        }
+        await Future.delayed(Duration(milliseconds: 600 * attempts));
+      }
+    }
+  }
+
+  Future<raw_http.Response> get(Uri url, {Map<String, String>? headers}) =>
+      _execute(() => _inner.get(url, headers: headers));
+
+  Future<raw_http.Response> post(Uri url, {Map<String, String>? headers, Object? body, Encoding? encoding}) =>
+      _execute(() => _inner.post(url, headers: headers, body: body, encoding: encoding));
+
+  Future<raw_http.Response> put(Uri url, {Map<String, String>? headers, Object? body, Encoding? encoding}) =>
+      _execute(() => _inner.put(url, headers: headers, body: body, encoding: encoding));
+
+  Future<raw_http.Response> patch(Uri url, {Map<String, String>? headers, Object? body, Encoding? encoding}) =>
+      _execute(() => _inner.patch(url, headers: headers, body: body, encoding: encoding));
+
+  Future<raw_http.Response> delete(Uri url, {Map<String, String>? headers, Object? body, Encoding? encoding}) =>
+      _execute(() => _inner.delete(url, headers: headers, body: body, encoding: encoding));
+}
+
+final MaisonHttp http = MaisonHttp();
 
 class NoirApiClient {
   String baseUrl;
@@ -27,7 +83,7 @@ class NoirApiClient {
     return h;
   }
 
-  dynamic _parseResponse(http.Response res) {
+  dynamic _parseResponse(raw_http.Response res) {
     if (res.body.trim().isEmpty) {
       return <String, dynamic>{'success': res.statusCode >= 200 && res.statusCode < 300};
     }
