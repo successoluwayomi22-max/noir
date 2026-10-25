@@ -75,25 +75,53 @@ class AuthProvider extends ChangeNotifier {
   String _sanitizeErrorMessage(dynamic e) {
     final str = e.toString();
     final lower = str.toLowerCase();
+
+    // 1. Network / Internet Connection Errors
+    if (lower.contains('apiexception: 7') ||
+        lower.contains('apiexception: 7:') ||
+        lower.contains('network_error') ||
+        lower.contains('network error') ||
+        lower.contains('socketexception') ||
+        lower.contains('failed host lookup') ||
+        lower.contains('connection refused') ||
+        lower.contains('connection timed out') ||
+        lower.contains('handshakeexception') ||
+        lower.contains('timeoutexception') ||
+        lower.contains('clientexception') ||
+        lower.contains('network is unreachable') ||
+        lower.contains('no address associated with hostname')) {
+      return 'No internet connection. Please check your network and try again.';
+    }
+
+    // 2. Google Sign-In Specific Errors
+    if (lower.contains('12501') ||
+        lower.contains('sign_in_canceled') ||
+        lower.contains('sign_in_cancelled')) {
+      return 'Google sign-in was cancelled.';
+    }
+
     if (lower.contains('api10') ||
         lower.contains('apiexception: 10') ||
         lower.contains('sign_in_failed') ||
         lower.contains('developer_error') ||
-        (lower.contains('platformexception') && lower.contains('sign_in')) ||
         (lower.contains('google.android.gms') && lower.contains('10'))) {
-      return 'Google Sign-In is not configured for this build (Firebase SHA-1 fingerprint required). Please sign in with your email and password.';
+      return 'Google Sign-In is temporarily unavailable. Please sign in with your email and password.';
     }
-    if (lower.contains('apiexception: 12500') || lower.contains('12500')) {
-      return 'Google Sign-In service unavailable. Please check your Google Play Services or use email sign in.';
+
+    if (lower.contains('apiexception: 12500') ||
+        lower.contains('12500') ||
+        lower.contains('12502')) {
+      return 'Google Play Services unavailable. Please try again or use your email.';
     }
-    if (str.contains('SocketException') ||
-        str.contains('ClientException') ||
-        str.contains('Failed host lookup') ||
-        str.contains('Connection refused') ||
-        str.contains('Connection timed out') ||
-        str.contains('HandshakeException')) {
-      return 'Unable to reach the Noir server. Please check your Wi-Fi/cellular connection and ensure the server is active.';
+
+    // Catch any remaining raw Google Play Services / PlatformException leaks
+    if (lower.contains('google.android.gms') ||
+        lower.contains('apiexception') ||
+        (lower.contains('platformexception') && lower.contains('sign_in'))) {
+      return 'Unable to complete Google sign-in. Please check your internet connection or use email.';
     }
+
+    // 3. Server / Authentication Responses
     if (str.contains('already registered') || str.contains('already exists')) {
       return 'An account with this email already exists. Please sign in instead.';
     }
@@ -187,7 +215,12 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _error = _sanitizeErrorMessage(e);
+      final sanitized = _sanitizeErrorMessage(e);
+      if (sanitized == 'Google sign-in was cancelled.') {
+        _error = null;
+      } else {
+        _error = sanitized;
+      }
       _isLoading = false;
       notifyListeners();
       return false;

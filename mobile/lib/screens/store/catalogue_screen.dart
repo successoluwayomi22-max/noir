@@ -133,20 +133,31 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          AppStrings.of(context).addedToBag,
-          style: GoogleFonts.urbanist(fontWeight: FontWeight.w700),
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                AppStrings.of(context).addedToBag,
+                style: GoogleFonts.urbanist(fontWeight: FontWeight.w700, fontSize: 13.5),
+              ),
+            ),
+          ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF232A20)
+            : Theme.of(context).colorScheme.primary,
         behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 1),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        duration: const Duration(seconds: 2),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 156),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         action: SnackBarAction(
           label: AppStrings.of(context).viewCart,
-          textColor: Colors.white,
+          textColor: const Color(0xFFD4AF37),
           onPressed: () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => CartScreen()),
+            MaterialPageRoute(builder: (_) => const CartScreen()),
           ),
         ),
       ),
@@ -593,6 +604,23 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
                           Icons.image_outlined,
                           color: isDark ? Colors.white38 : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                           size: 32,
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.transparent,
+                              (isDark ? NoirTheme.charcoalCard : Colors.white).withValues(alpha: 0.45),
+                              isDark ? NoirTheme.charcoalCard : Colors.white,
+                            ],
+                            stops: const [0.0, 0.65, 0.88, 1.0],
+                          ),
                         ),
                       ),
                     ),

@@ -260,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (auth.error != null)
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(14),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   margin: const EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.error.withValues(alpha: 0.1),
@@ -273,7 +273,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(
-                        Icons.error_outline_rounded,
+                        (auth.error!.toLowerCase().contains('internet') ||
+                                auth.error!.toLowerCase().contains('network') ||
+                                auth.error!.toLowerCase().contains('connection'))
+                            ? Icons.wifi_off_rounded
+                            : Icons.info_outline_rounded,
                         size: 20,
                         color: Theme.of(context).colorScheme.error,
                       ),
@@ -283,29 +287,39 @@ class _LoginScreenState extends State<LoginScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              auth.error!,
+                              (auth.error!.toLowerCase().contains('internet') ||
+                                      auth.error!.toLowerCase().contains('network'))
+                                  ? 'Network Error'
+                                  : 'Notice',
                               style: GoogleFonts.urbanist(
                                 color: Theme.of(context).colorScheme.error,
                                 fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              auth.error!,
+                              style: GoogleFonts.urbanist(
+                                color: Theme.of(context).colorScheme.error.withValues(alpha: 0.9),
+                                fontSize: 12.5,
                                 height: 1.35,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            if (auth.error!.contains('server') || auth.error!.contains('connection')) ...[
-                              const SizedBox(height: 8),
-                              InkWell(
-                                onTap: () => Navigator.of(context).pushNamed('/offline'),
-                                child: Text(
-                                  'Diagnose Connection / Change IP →',
-                                  style: GoogleFonts.urbanist(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    color: NoirTheme.primary,
-                                  ),
-                                ),
-                              ),
-                            ],
                           ],
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => auth.clearError(),
+                        borderRadius: BorderRadius.circular(12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: Icon(
+                            Icons.close_rounded,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.error.withValues(alpha: 0.7),
+                          ),
                         ),
                       ),
                     ],

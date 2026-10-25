@@ -22,6 +22,8 @@ class _OfflineScreenState extends State<OfflineScreen> {
   bool _isChecking = false;
   String? _statusMessage;
   bool _isHealthy = false;
+  int _logoTapCount = 0;
+  bool _developerMode = false;
 
   @override
   void initState() {
@@ -32,7 +34,7 @@ class _OfflineScreenState extends State<OfflineScreen> {
   Future<void> _checkConnection() async {
     setState(() {
       _isChecking = true;
-      _statusMessage = 'Probing Noir server connection...';
+      _statusMessage = 'Connecting to the Maison...';
     });
 
     final api = context.read<NoirApiClient>();
@@ -64,19 +66,23 @@ class _OfflineScreenState extends State<OfflineScreen> {
       setState(() {
         _isChecking = false;
         _isHealthy = false;
-        _statusMessage = 'Server responded with status code ${res.statusCode}.';
+        _statusMessage = _developerMode
+            ? 'Server responded with status code ${res.statusCode}.'
+            : 'Unable to reach the boutique. Please verify your connection.';
       });
     } on SocketException catch (_) {
       setState(() {
         _isChecking = false;
         _isHealthy = false;
-        _statusMessage = 'Could not reach $targetUrl. Please ensure device is on the same Wi-Fi and server is active.';
+        _statusMessage = _developerMode
+            ? 'Could not reach $targetUrl. Please check local IP / Wi-Fi.'
+            : 'No internet connection detected. Please check your Wi-Fi or cellular data.';
       });
-    } catch (e) {
+    } catch (_) {
       setState(() {
         _isChecking = false;
         _isHealthy = false;
-        _statusMessage = 'Connection failed: ${e.toString().replaceAll('Exception: ', '')}';
+        _statusMessage = 'No internet connection detected. Please check your Wi-Fi or cellular data.';
       });
     }
   }
@@ -172,19 +178,38 @@ class _OfflineScreenState extends State<OfflineScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Top Brand Mark
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.asset(
-                    'assets/images/noir_logo.jpg',
-                    width: 48,
-                    height: 48,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => Image.asset(
-                      'assets/app_icon.jpg',
+                // Top Brand Mark (5 taps unlocks developer diagnostics)
+                GestureDetector(
+                  onTap: () {
+                    _logoTapCount++;
+                    if (_logoTapCount >= 5) {
+                      setState(() {
+                        _developerMode = !_developerMode;
+                      });
+                      _logoTapCount = 0;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(_developerMode
+                              ? 'Developer Server Configuration Unlocked'
+                              : 'Developer Mode Deactivated'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    }
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Image.asset(
+                      'assets/images/noir_logo.jpg',
                       width: 48,
                       height: 48,
                       fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => Image.asset(
+                        'assets/app_icon.jpg',
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -244,10 +269,10 @@ class _OfflineScreenState extends State<OfflineScreen> {
                 ),
                 const SizedBox(height: 28),
 
-                // Diagnostics Card
+                // Clean Customer-Facing Status Indicator
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     color: isDark ? const Color(0xFF161816) : Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(16),
@@ -255,68 +280,106 @@ class _OfflineScreenState extends State<OfflineScreen> {
                       color: isDark ? Colors.white10 : Colors.black12,
                     ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            _isHealthy ? Icons.check_circle_rounded : Icons.info_outline_rounded,
-                            size: 16,
-                            color: _isHealthy ? Colors.greenAccent : const Color(0xFFD4A373),
+                      if (_isChecking)
+                        const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Color(0xFFD4A373),
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'SERVER TARGET',
-                            style: GoogleFonts.urbanist(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.2,
-                              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                            ),
-                          ),
-                          const Spacer(),
-                          InkWell(
-                            onTap: _showConfigureServerDialog,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                              child: Text(
-                                'Change',
-                                style: GoogleFonts.urbanist(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: NoirTheme.primary,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        api.baseUrl,
-                        style: GoogleFonts.firaCode(
-                          fontSize: 12,
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
+                        )
+                      else
+                        Icon(
+                          _isHealthy ? Icons.check_circle_rounded : Icons.wifi_off_rounded,
+                          size: 18,
+                          color: _isHealthy ? Colors.greenAccent : const Color(0xFFD4A373),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (_statusMessage != null) ...[
-                        const Divider(height: 16),
-                        Text(
-                          _statusMessage!,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          _isChecking
+                              ? 'Connecting to the Maison...'
+                              : (_statusMessage ?? 'No connection available.'),
                           style: GoogleFonts.urbanist(
-                            fontSize: 12,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
                             color: _isHealthy
                                 ? Colors.greenAccent
-                                : theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                : theme.colorScheme.onSurface.withValues(alpha: 0.75),
                           ),
                         ),
-                      ],
+                      ),
                     ],
                   ),
                 ),
+
+                // Developer-Only Diagnostics Card (Visible only when unlocked via 5 taps)
+                if (_developerMode) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF221616) : Colors.red.shade50,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.redAccent.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.developer_mode_rounded,
+                              size: 16,
+                              color: Colors.redAccent,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'DEVELOPER DIAGNOSTICS',
+                              style: GoogleFonts.urbanist(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 1.2,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                            const Spacer(),
+                            InkWell(
+                              onTap: _showConfigureServerDialog,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                child: Text(
+                                  'Change IP',
+                                  style: GoogleFonts.urbanist(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: NoirTheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          api.baseUrl,
+                          style: GoogleFonts.firaCode(
+                            fontSize: 12,
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 32),
 
                 // Retry Button

@@ -424,18 +424,31 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E211A),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF1E211A)
+                      : const Color(0xFFF2F5ED),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: NoirTheme.primary.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.verified_user_outlined, color: Color(0xFF2ECC71), size: 20),
+                    Icon(
+                      Icons.verified_user_outlined,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? const Color(0xFF2ECC71)
+                          : NoirTheme.primary,
+                      size: 20,
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         'Genuine Banking Standard: All payments and physical delivery addresses are verified directly on the secure ledger.',
-                        style: GoogleFonts.urbanist(fontSize: 12, color: Colors.white70, height: 1.3),
+                        style: GoogleFonts.urbanist(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                          height: 1.3,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
@@ -538,7 +551,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               const SizedBox(height: 4),
               Text(
                 'Select your payment channel. All transactions are end-to-end encrypted.',
-                style: GoogleFonts.urbanist(fontSize: 12.5, color: Colors.grey),
+                style: GoogleFonts.urbanist(
+                  fontSize: 12.5,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -600,6 +616,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: GoogleFonts.urbanist(
                             fontWeight: FontWeight.w900,
                             fontSize: 16,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         Text(
@@ -663,13 +680,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _summaryRow(String label, String value) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: GoogleFonts.urbanist(fontSize: 13, color: Colors.grey)),
-        Text(value,
-            style: GoogleFonts.urbanist(
-                fontSize: 13, fontWeight: FontWeight.w800, color: Colors.white70)),
+        Text(
+          label,
+          style: GoogleFonts.urbanist(
+            fontSize: 13,
+            color: onSurface.withValues(alpha: isDark ? 0.7 : 0.65),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(
+          value,
+          style: GoogleFonts.urbanist(
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+            color: onSurface,
+          ),
+        ),
       ],
     );
   }
@@ -681,6 +712,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     required IconData icon,
     bool isRecommended = false,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     final isSelected = _paymentMethod == id;
     return InkWell(
       onTap: () {
@@ -696,7 +729,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: isSelected
+              ? (isDark ? const Color(0xFF1E231B) : const Color(0xFFF3F6EE))
+              : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected
@@ -707,7 +742,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
         child: Row(
           children: [
-            Icon(icon, color: isSelected ? NoirTheme.primary : Colors.grey, size: 24),
+            Icon(
+              icon,
+              color: isSelected ? NoirTheme.primary : onSurface.withValues(alpha: 0.5),
+              size: 24,
+            ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -721,7 +760,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: GoogleFonts.urbanist(
                             fontWeight: FontWeight.w900,
                             fontSize: 14.5,
-                            color: isSelected ? Colors.white : Colors.white70,
+                            color: onSurface,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -734,10 +773,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             color: NoirTheme.softOlive.withValues(alpha: 0.18),
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: const Text(
+                          child: Text(
                             'RECOMMENDED',
                             style: TextStyle(
-                              color: NoirTheme.softOlive,
+                              color: isDark ? NoirTheme.softOlive : NoirTheme.primary,
                               fontSize: 9,
                               fontWeight: FontWeight.w900,
                             ),
@@ -749,14 +788,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: GoogleFonts.urbanist(fontSize: 12, color: Colors.grey),
+                    style: GoogleFonts.urbanist(
+                      fontSize: 12,
+                      color: onSurface.withValues(alpha: 0.6),
+                    ),
                   ),
                 ],
               ),
             ),
             Icon(
               isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: isSelected ? NoirTheme.primary : Colors.grey,
+              color: isSelected ? NoirTheme.primary : onSurface.withValues(alpha: 0.4),
               size: 22,
             ),
           ],
