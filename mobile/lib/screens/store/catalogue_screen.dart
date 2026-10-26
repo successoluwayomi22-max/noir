@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -130,8 +131,9 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
         image: product.featuredImage,
       ),
     );
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.removeCurrentSnackBar();
+    messenger.showSnackBar(
       SnackBar(
         content: Row(
           children: [
@@ -150,18 +152,29 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
             : Theme.of(context).colorScheme.primary,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 156),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        dismissDirection: DismissDirection.down,
         action: SnackBarAction(
           label: AppStrings.of(context).viewCart,
           textColor: const Color(0xFFD4AF37),
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const CartScreen()),
-          ),
+          onPressed: () {
+            messenger.hideCurrentSnackBar();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const CartScreen()),
+            );
+          },
         ),
       ),
     );
+
+    // Explicit timer guarantee: vanishes after 2 seconds automatically
+    Timer(const Duration(milliseconds: 2100), () {
+      if (mounted) {
+        messenger.hideCurrentSnackBar();
+      }
+    });
   }
 
   @override

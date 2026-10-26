@@ -373,9 +373,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error.withValues(alpha: 0.5)),
               ),
-              onPressed: () {
-                auth.logout();
-                Navigator.of(context).pushReplacementNamed('/login');
+              onPressed: () async {
+                final shouldLogout = await showDialog<bool>(
+                  context: context,
+                  barrierColor: Colors.black87,
+                  builder: (ctx) => AlertDialog(
+                    backgroundColor: const Color(0xFF1A1A1A),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(color: const Color(0xFFD4AF37).withValues(alpha: 0.3)),
+                    ),
+                    titlePadding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
+                    contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                    actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    title: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.error.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.logout_rounded, color: Theme.of(context).colorScheme.error, size: 22),
+                        ),
+                        const SizedBox(width: 14),
+                        Text(
+                          AppStrings.of(context).logOut,
+                          style: GoogleFonts.playfairDisplay(
+                            color: const Color(0xFFFAFAFA),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: Text(
+                      'Are you sure you want to log out of your account?',
+                      style: GoogleFonts.urbanist(
+                        color: const Color(0xFFFAFAFA).withValues(alpha: 0.7),
+                        fontSize: 14,
+                        height: 1.5,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color(0xFFFAFAFA).withValues(alpha: 0.7),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: Text(
+                          AppStrings.of(context).cancel.toUpperCase(),
+                          style: GoogleFonts.urbanist(fontWeight: FontWeight.w700, letterSpacing: 0.8, fontSize: 13),
+                        ),
+                      ),
+                      FilledButton(
+                        onPressed: () => Navigator.of(ctx).pop(true),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.error,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: Text(
+                          AppStrings.of(context).logOut.toUpperCase(),
+                          style: GoogleFonts.urbanist(fontWeight: FontWeight.w700, letterSpacing: 0.8, fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+                if (shouldLogout == true && context.mounted) {
+                  auth.logout();
+                  Navigator.of(context).pushReplacementNamed('/login');
+                }
               },
               child: Text(
                 AppStrings.of(context).logOut.toUpperCase(),

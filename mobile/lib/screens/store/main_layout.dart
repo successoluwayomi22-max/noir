@@ -81,7 +81,7 @@ class _MainLayoutState extends State<MainLayout> {
                 borderRadius: BorderRadius.circular(16),
                 side: const BorderSide(color: Color(0xFF2C3026)),
               ),
-              margin: const EdgeInsets.symmetric(horizontal: 48, vertical: 100),
+              margin: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
             ),
           );
         } else {

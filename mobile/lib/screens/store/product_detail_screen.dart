@@ -159,8 +159,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.removeCurrentSnackBar();
+    messenger.showSnackBar(
       SnackBar(
         content: Row(
           children: [
@@ -177,14 +178,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         backgroundColor: const Color(0xFF1E211A),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        dismissDirection: DismissDirection.down,
         action: SnackBarAction(
           label: 'CHECKOUT',
           textColor: NoirTheme.primary,
-          onPressed: () => Navigator.pushNamed(context, '/cart'),
+          onPressed: () {
+            messenger.hideCurrentSnackBar();
+            Navigator.pushNamed(context, '/cart');
+          },
         ),
       ),
     );
+
+    Timer(const Duration(milliseconds: 2100), () {
+      if (mounted) {
+        messenger.hideCurrentSnackBar();
+      }
+    });
   }
 
   Future<void> _performBiometricFastCheckout() async {
