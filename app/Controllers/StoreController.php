@@ -698,7 +698,8 @@ final class StoreController
         // Check for external direct download URL (e.g. GitHub Releases, Google Drive, Cloudflare R2)
         $externalUrl = config('app_download_url') 
             ?: store_setting('app_download_url') 
-            ?: (getenv('APP_DOWNLOAD_URL') ?: ($_ENV['APP_DOWNLOAD_URL'] ?? ''));
+            ?: store_setting('mobile_app_apk_url')
+            ?: (getenv('APP_DOWNLOAD_URL') ?: (getenv('APP_URL_DOWNLOAD') ?: ($_ENV['APP_DOWNLOAD_URL'] ?? ($_ENV['APP_URL_DOWNLOAD'] ?? ''))));
 
         if (!empty($externalUrl)) {
             header('Location: ' . $externalUrl, true, 302);

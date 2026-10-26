@@ -57,7 +57,7 @@ return [
         }
         return $dbConfig;
     })(),
-    'app_download_url' => $env('APP_DOWNLOAD_URL', ''),
+    'app_download_url' => $env('APP_DOWNLOAD_URL') ?: $env('APP_URL_DOWNLOAD', ''),
     'analytics' => ['google_measurement_id' => trim((string)$env('GOOGLE_ANALYTICS_ID', ''))],
     'payments' => [
         'default_provider' => $env('PAYMENT_DEFAULT_PROVIDER', 'paystack'),
