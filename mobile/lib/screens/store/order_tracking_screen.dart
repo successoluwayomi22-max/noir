@@ -710,10 +710,17 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                       labelStyle: GoogleFonts.urbanist(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
-                        color: isSel ? Colors.black : Colors.white70,
+                        color: isSel
+                            ? Colors.black
+                            : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                       selectedColor: NoirTheme.primary,
                       backgroundColor: Theme.of(context).colorScheme.surface,
+                      side: BorderSide(
+                        color: isSel
+                            ? Colors.transparent
+                            : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                      ),
                       onSelected: (_) {
                         setState(() {
                           _selectedOrder = o;
@@ -910,8 +917,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_outlined,
-                          size: 16, color: Colors.grey),
+                      Icon(Icons.location_on_outlined,
+                          size: 16, color: NoirTheme.primary),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
@@ -919,7 +926,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                           style: GoogleFonts.urbanist(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white),
+                              color: Theme.of(context).colorScheme.onSurface),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -930,15 +937,15 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(Icons.payments_outlined,
-                            size: 16, color: Colors.grey),
+                        Icon(Icons.payments_outlined,
+                            size: 16, color: NoirTheme.primary),
                         const SizedBox(width: 6),
                         Text(
                           'Confirmed Total: ${_formatPrice(_orderTotal, _currency)}',
                           style: GoogleFonts.urbanist(
                               fontSize: 12.5,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white70),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.75)),
                         ),
                       ],
                     ),
